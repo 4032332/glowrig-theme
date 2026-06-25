@@ -224,3 +224,58 @@ a:hover{color:var(--accent-purple)}
 .stagger>*:nth-child(3){animation-delay:0.2s}
 .stagger>*:nth-child(4){animation-delay:0.3s}
 .scanlines::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none}
+
+/* ============================================
+   MOBILE NAV DRAWER
+============================================ */
+.mobile-nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:150;opacity:0;pointer-events:none;transition:opacity 0.3s ease}
+.mobile-nav-overlay.open{opacity:1;pointer-events:all}
+.mobile-nav{position:fixed;top:0;left:0;width:280px;height:100vh;background:var(--bg-secondary);border-right:1px solid var(--border-subtle);z-index:151;transform:translateX(-100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);padding:100px 32px 32px;display:flex;flex-direction:column;gap:8px}
+.mobile-nav.open{transform:translateX(0)}
+.mobile-nav-link{font-family:var(--font-heading);font-size:20px;font-weight:600;color:var(--text-secondary);padding:12px 0;border-bottom:1px solid var(--border-subtle);letter-spacing:0.05em;transition:color var(--transition)}
+.mobile-nav-link:hover{color:var(--accent-purple)}
+.mobile-menu-btn.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.mobile-menu-btn.active span:nth-child(2){opacity:0;transform:translateX(-10px)}
+.mobile-menu-btn.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* ============================================
+   SCROLL PROGRESS BAR
+============================================ */
+.scroll-progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent-purple),var(--accent-cyan));z-index:9999;width:0%;pointer-events:none}
+
+/* ============================================
+   ENHANCED PRODUCT IMAGE TRANSITION
+============================================ */
+.product-main-image img{transition:opacity 0.2s ease,transform 0.2s ease}
+
+/* ============================================
+   SECTION REVEAL ANIMATIONS
+============================================ */
+.reveal-ready{will-change:opacity,transform}
+
+/* ============================================
+   NEON GLOW PULSE ON BUNDLE CARD
+============================================ */
+@keyframes border-flow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.bundle-card::before{background-size:200% 200%;animation:border-flow 3s ease infinite}
+
+/* ============================================
+   HERO PARTICLE CANVAS
+============================================ */
+.hero-section canvas{mix-blend-mode:screen}
+
+/* ============================================
+   PRODUCT CARD RIPPLE CONTAINER
+============================================ */
+.product-card{overflow:hidden}
+
+/* ============================================
+   ACTIVE NAV LINK
+============================================ */
+.nav-link.active{color:var(--text-primary)}
+.nav-link.active::after{transform:scaleX(1)}
+
+/* ============================================
+   HERO STAT COUNTER
+============================================ */
+.hero-stat-value{font-variant-numeric:tabular-nums}
