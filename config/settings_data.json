@@ -1,10 +1,8 @@
 {
   "current": {
     "color_bg_primary": "#0a0a0f",
-    "color_bg_secondary": "#12121a",
     "color_accent_primary": "#b44fff",
     "color_accent_secondary": "#00f5ff",
-    "color_text_primary": "#ffffff",
-    "color_text_secondary": "#8888aa"
+    "color_text_primary": "#ffffff"
   }
 }

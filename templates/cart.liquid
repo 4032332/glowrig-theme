@@ -1,117 +1,42 @@
-{% comment %} GlowRig Cart Page {% endcomment %}
-
 <div style="padding:64px 0;min-height:60vh;">
   <div class="container">
-    <h1 style="font-family:var(--font-heading);font-size:clamp(28px,4vw,44px);font-weight:700;margin-bottom:48px;">
-      Your Cart
-      {% if cart.item_count > 0 %}
-        <span style="font-size:16px;color:var(--text-muted);font-weight:400;">({{ cart.item_count }} item{% if cart.item_count > 1 %}s{% endif %})</span>
-      {% endif %}
-    </h1>
-
+    <h1 style="font-family:var(--font-heading);font-size:clamp(28px,4vw,44px);font-weight:700;margin-bottom:48px;">Your Cart{% if cart.item_count > 0 %} <span style="font-size:16px;color:var(--text-muted);font-weight:400;">({{ cart.item_count }} item{% if cart.item_count > 1 %}s{% endif %})</span>{% endif %}</h1>
     {% if cart.item_count > 0 %}
       <div style="display:grid;grid-template-columns:1fr 380px;gap:48px;align-items:start;">
-
-        <!-- Cart Items -->
         <div>
-          {% form 'cart', cart %}
-            {% for item in cart.items %}
-              <div style="display:grid;grid-template-columns:100px 1fr auto;gap:20px;padding:24px 0;border-bottom:1px solid var(--border-subtle);align-items:center;">
-
-                <a href="{{ item.url }}">
-                  {% if item.image %}
-                    <img src="{{ item.image | img_url: '200x200', crop: 'center' }}" alt="{{ item.title }}" style="width:100px;height:100px;object-fit:cover;border-radius:var(--radius-md);border:1px solid var(--border-subtle);">
-                  {% else %}
-                    <div style="width:100px;height:100px;background:var(--bg-card);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:32px;">🎮</div>
-                  {% endif %}
-                </a>
-
-                <div>
-                  <a href="{{ item.url }}" style="font-family:var(--font-heading);font-size:16px;font-weight:600;text-decoration:none;color:var(--text-primary);">{{ item.product.title }}</a>
-                  {% if item.variant.title != 'Default Title' %}
-                    <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">{{ item.variant.title }}</div>
-                  {% endif %}
-                  <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--accent-purple);margin-top:8px;">{{ item.price | money }}</div>
-
-                  <div style="display:flex;align-items:center;gap:12px;margin-top:12px;">
-                    <div style="display:flex;align-items:center;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);overflow:hidden;">
-                      <button type="button" style="background:none;border:none;color:var(--text-secondary);padding:6px 12px;cursor:pointer;font-size:16px;" onclick="updateQty({{ item.key }}, {{ item.quantity | minus: 1 }})">−</button>
-                      <span style="padding:6px 16px;font-family:var(--font-heading);font-size:14px;border-left:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle);">{{ item.quantity }}</span>
-                      <button type="button" style="background:none;border:none;color:var(--text-secondary);padding:6px 12px;cursor:pointer;font-size:16px;" onclick="updateQty({{ item.key }}, {{ item.quantity | plus: 1 }})">+</button>
-                    </div>
-                    <a href="/cart/change?id={{ item.key }}&quantity=0" style="font-size:12px;color:var(--text-muted);font-family:var(--font-heading);letter-spacing:0.05em;">Remove</a>
+          {% for item in cart.items %}
+            <div style="display:grid;grid-template-columns:100px 1fr auto;gap:20px;padding:24px 0;border-bottom:1px solid var(--border-subtle);align-items:center;">
+              <a href="{{ item.url }}">{% if item.image %}<img src="{{ item.image | img_url: '200x200', crop: 'center' }}" alt="{{ item.title }}" style="width:100px;height:100px;object-fit:cover;border-radius:var(--radius-md);border:1px solid var(--border-subtle);">{% else %}<div style="width:100px;height:100px;background:var(--bg-card);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:32px;">🎮</div>{% endif %}</a>
+              <div>
+                <a href="{{ item.url }}" style="font-family:var(--font-heading);font-size:16px;font-weight:600;text-decoration:none;color:var(--text-primary);">{{ item.product.title }}</a>
+                {% if item.variant.title != 'Default Title' %}<div style="font-size:13px;color:var(--text-muted);margin-top:4px;">{{ item.variant.title }}</div>{% endif %}
+                <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--accent-purple);margin-top:8px;">{{ item.price | money }}</div>
+                <div style="display:flex;align-items:center;gap:12px;margin-top:12px;">
+                  <div style="display:flex;align-items:center;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);overflow:hidden;">
+                    <a href="/cart/change?id={{ item.key }}&quantity={{ item.quantity | minus: 1 }}" style="padding:6px 12px;font-size:16px;color:var(--text-secondary);">−</a>
+                    <span style="padding:6px 16px;font-family:var(--font-heading);font-size:14px;border-left:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle);">{{ item.quantity }}</span>
+                    <a href="/cart/change?id={{ item.key }}&quantity={{ item.quantity | plus: 1 }}" style="padding:6px 12px;font-size:16px;color:var(--text-secondary);">+</a>
                   </div>
+                  <a href="/cart/change?id={{ item.key }}&quantity=0" style="font-size:12px;color:var(--text-muted);font-family:var(--font-heading);">Remove</a>
                 </div>
-
-                <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text-primary);text-align:right;">
-                  {{ item.line_price | money }}
-                </div>
-
               </div>
-            {% endfor %}
-          {% endform %}
+              <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text-primary);text-align:right;">{{ item.line_price | money }}</div>
+            </div>
+          {% endfor %}
         </div>
-
-        <!-- Order Summary -->
         <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:32px;position:sticky;top:100px;">
           <h2 style="font-family:var(--font-heading);font-size:20px;font-weight:700;margin-bottom:24px;">Order Summary</h2>
-
-          <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-size:14px;color:var(--text-secondary);">
-            <span>Subtotal</span>
-            <span>{{ cart.total_price | money }}</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:24px;font-size:14px;color:var(--text-secondary);">
-            <span>Shipping</span>
-            <span>Calculated at checkout</span>
-          </div>
-
-          {% if cart.total_price < 7500 %}
-            <div style="background:rgba(180,79,255,0.08);border:1px solid rgba(180,79,255,0.2);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:24px;font-size:13px;color:var(--text-secondary);">
-              Add <strong style="color:var(--accent-purple);">{{ 7500 | minus: cart.total_price | money }}</strong> more for free shipping 🚀
-            </div>
-          {% else %}
-            <div style="background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.2);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:24px;font-size:13px;color:var(--accent-cyan);">
-              ✓ You qualify for free shipping!
-            </div>
-          {% endif %}
-
-          <div style="display:flex;justify-content:space-between;font-family:var(--font-heading);font-size:20px;font-weight:700;margin-bottom:24px;padding-top:16px;border-top:1px solid var(--border-subtle);">
-            <span>Total</span>
-            <span style="color:var(--accent-purple);">{{ cart.total_price | money }}</span>
-          </div>
-
-          <a href="/checkout" class="btn btn-primary btn-full" style="margin-bottom:12px;">
-            Proceed to Checkout
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
+          <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-size:14px;color:var(--text-secondary);"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:24px;font-size:14px;color:var(--text-secondary);"><span>Shipping</span><span>Calculated at checkout</span></div>
+          {% if cart.total_price < 7500 %}<div style="background:rgba(180,79,255,0.08);border:1px solid rgba(180,79,255,0.2);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:24px;font-size:13px;color:var(--text-secondary);">Add <strong style="color:var(--accent-purple);">{{ 7500 | minus: cart.total_price | money }}</strong> more for free shipping 🚀</div>{% else %}<div style="background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.2);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:24px;font-size:13px;color:var(--accent-cyan);">✓ You qualify for free shipping!</div>{% endif %}
+          <div style="display:flex;justify-content:space-between;font-family:var(--font-heading);font-size:20px;font-weight:700;margin-bottom:24px;padding-top:16px;border-top:1px solid var(--border-subtle);"><span>Total</span><span style="color:var(--accent-purple);">{{ cart.total_price | money }}</span></div>
+          <a href="/checkout" class="btn btn-primary btn-full" style="margin-bottom:12px;">Proceed to Checkout <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
           <a href="/collections/all" style="display:block;text-align:center;font-size:13px;color:var(--text-muted);font-family:var(--font-heading);padding:8px;">← Continue Shopping</a>
-
-          <!-- Payment icons -->
-          <div style="display:flex;gap:8px;justify-content:center;margin-top:20px;opacity:0.5;">
-            <span style="font-size:11px;color:var(--text-muted);">Visa · Mastercard · PayPal · Apple Pay</span>
-          </div>
+          <div style="display:flex;gap:8px;justify-content:center;margin-top:20px;opacity:0.5;"><span style="font-size:11px;color:var(--text-muted);">Visa · Mastercard · PayPal · Apple Pay</span></div>
         </div>
-
       </div>
-
     {% else %}
-      <div style="text-align:center;padding:80px 0;">
-        <div style="font-size:80px;margin-bottom:24px;">🛒</div>
-        <h2 style="font-family:var(--font-heading);font-size:32px;margin-bottom:12px;">Your cart is empty</h2>
-        <p style="color:var(--text-secondary);margin-bottom:36px;">Time to level up your setup.</p>
-        <a href="/collections/all" class="btn btn-primary">Start Shopping</a>
-      </div>
+      <div style="text-align:center;padding:80px 0;"><div style="font-size:80px;margin-bottom:24px;">🛒</div><h2 style="font-family:var(--font-heading);font-size:32px;margin-bottom:12px;">Your cart is empty</h2><p style="color:var(--text-secondary);margin-bottom:36px;">Time to level up your setup.</p><a href="/collections/all" class="btn btn-primary">Start Shopping</a></div>
     {% endif %}
   </div>
 </div>
-
-<script>
-function updateQty(key, qty) {
-  if (qty < 0) qty = 0;
-  fetch('/cart/change.js', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id: key, quantity: qty })
-  }).then(() => window.location.reload());
-}
-</script>

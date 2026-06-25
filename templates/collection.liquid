@@ -1,65 +1,21 @@
-{% comment %} GlowRig Collection Page {% endcomment %}
-
 <div class="collection-page">
   <div class="container">
-
-    <!-- Collection Hero -->
     <div class="collection-hero">
       <span class="section-eyebrow">{{ collection.title }}</span>
       <h1 class="section-title">{{ collection.title }}</h1>
-      {% if collection.description != blank %}
-        <p class="section-desc">{{ collection.description }}</p>
-      {% endif %}
+      {% if collection.description != blank %}<p class="section-desc">{{ collection.description }}</p>{% endif %}
     </div>
-
-    <!-- Sort / Filter bar -->
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:16px;">
       <div class="collection-filters">
         <button class="filter-btn active">All</button>
-        {% if collection.handle == 'desk-mats' %}
-          <button class="filter-btn">Cosmic Series</button>
-          <button class="filter-btn">Japanese Series</button>
-          <button class="filter-btn">800mm</button>
-          <button class="filter-btn">900mm</button>
-        {% elsif collection.handle == 'lighting' %}
-          <button class="filter-btn">Light Bars</button>
-          <button class="filter-btn">Bias Lighting</button>
-          <button class="filter-btn">Ambient</button>
-        {% elsif collection.handle == 'stands-organisation' %}
-          <button class="filter-btn">Headphone Stands</button>
-          <button class="filter-btn">Cable Management</button>
-        {% else %}
-          <button class="filter-btn">New Arrivals</button>
-          <button class="filter-btn">Best Sellers</button>
-        {% endif %}
+        {% if collection.handle == 'desk-mats' %}<button class="filter-btn">Cosmic Series</button><button class="filter-btn">Japanese Series</button>{% elsif collection.handle == 'lighting' %}<button class="filter-btn">Light Bars</button><button class="filter-btn">Bias Lighting</button><button class="filter-btn">Ambient</button>{% elsif collection.handle == 'stands-organisation' %}<button class="filter-btn">Headphone Stands</button><button class="filter-btn">Cable Management</button>{% else %}<button class="filter-btn">New Arrivals</button><button class="filter-btn">Best Sellers</button>{% endif %}
       </div>
-
-      <div style="display:flex;align-items:center;gap:12px;">
-        <span style="font-size:13px;color:var(--text-muted);">{{ collection.products.size }} products</span>
-        <select style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:8px 14px;color:var(--text-secondary);font-family:var(--font-heading);font-size:12px;cursor:pointer;outline:none;">
-          <option>Sort: Featured</option>
-          <option>Price: Low to High</option>
-          <option>Price: High to Low</option>
-          <option>Newest First</option>
-        </select>
-      </div>
+      <span style="font-size:13px;color:var(--text-muted);">{{ collection.products.size }} products</span>
     </div>
-
-    <!-- Product Grid -->
     {% if collection.products.size > 0 %}
-      <div class="products-grid stagger">
-        {% for product in collection.products %}
-          {% render 'product-card', product: product %}
-        {% endfor %}
-      </div>
+      <div class="products-grid stagger">{% for product in collection.products %}{% render 'product-card', product: product %}{% endfor %}</div>
     {% else %}
-      <div style="text-align:center;padding:96px 0;">
-        <div style="font-size:64px;margin-bottom:24px;">🎮</div>
-        <h2 style="font-family:var(--font-heading);font-size:28px;margin-bottom:12px;">Products incoming</h2>
-        <p style="color:var(--text-secondary);margin-bottom:32px;">This collection is being stocked. Check back soon.</p>
-        <a href="/collections/all" class="btn btn-primary">Shop All Products</a>
-      </div>
+      <div style="text-align:center;padding:96px 0;"><div style="font-size:64px;margin-bottom:24px;">🎮</div><h2 style="font-family:var(--font-heading);font-size:28px;margin-bottom:12px;">Products incoming</h2><p style="color:var(--text-secondary);margin-bottom:32px;">This collection is being stocked. Check back soon.</p><a href="/collections/all" class="btn btn-primary">Shop All Products</a></div>
     {% endif %}
-
   </div>
 </div>
