@@ -1,0 +1,174 @@
+{% comment %} GlowRig Product Page {% endcomment %}
+
+<div class="product-page">
+  <div class="container">
+    <div class="product-page-grid">
+
+      <!-- Gallery -->
+      <div class="product-gallery">
+        <div class="product-main-image">
+          {% if product.featured_image %}
+            <img
+              id="main-product-image"
+              src="{{ product.featured_image | img_url: '800x800', crop: 'center' }}"
+              alt="{{ product.featured_image.alt | default: product.title | escape }}"
+              width="800" height="800"
+            >
+          {% else %}
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-card);">
+              <span style="font-size:64px;">🎮</span>
+            </div>
+          {% endif %}
+        </div>
+
+        {% if product.images.size > 1 %}
+          <div class="product-thumbnails">
+            {% for image in product.images %}
+              <div class="product-thumb {% if forloop.first %}active{% endif %}" data-src="{{ image | img_url: '800x800', crop: 'center' }}">
+                <img
+                  src="{{ image | img_url: '150x150', crop: 'center' }}"
+                  alt="{{ image.alt | default: product.title | escape }}"
+                  loading="lazy"
+                >
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info">
+        {% if product.collections.first %}
+          <a href="{{ product.collections.first.url }}" style="font-size:12px;font-family:var(--font-heading);letter-spacing:0.1em;text-transform:uppercase;color:var(--accent-cyan);text-decoration:none;">
+            ← {{ product.collections.first.title }}
+          </a>
+        {% endif %}
+
+        <h1 class="product-info-title" style="margin-top:12px;">{{ product.title }}</h1>
+
+        <!-- Rating placeholder -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+          <div style="display:flex;gap:2px;">
+            {% for i in (1..5) %}<span style="color:var(--accent-purple);font-size:14px;">★</span>{% endfor %}
+          </div>
+          <span style="font-size:13px;color:var(--text-muted);">4.9 · 47 reviews</span>
+        </div>
+
+        <div class="product-info-price">{{ product.price | money }}</div>
+
+        {% form 'product', product, data-product-form: '' %}
+
+          {% if product.has_only_default_variant == false %}
+            {% for option in product.options_with_values %}
+              <div style="margin-bottom:20px;">
+                <div class="product-option-label">{{ option.name }}</div>
+                <div class="product-options">
+                  {% for value in option.values %}
+                    <button type="button" class="option-btn {% if forloop.first %}selected{% endif %}" data-option="{{ option.position }}" data-value="{{ value }}">
+                      {{ value }}
+                    </button>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <select name="id" style="display:none;" id="variant-select">
+            {% for variant in product.variants %}
+              <option value="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}>
+                {{ variant.title }}
+              </option>
+            {% endfor %}
+          </select>
+
+          <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
+            <button
+              type="submit"
+              name="add"
+              class="btn btn-primary btn-full product-add-btn"
+              data-add-to-cart
+              {% unless product.available %}disabled{% endunless %}
+            >
+              {% if product.available %}Add to Cart{% else %}Sold Out{% endif %}
+            </button>
+            <a href="/checkout?variant={{ product.selected_or_first_available_variant.id }}" class="btn product-buy-btn btn-full">
+              Buy Now
+            </a>
+          </div>
+
+        {% endform %}
+
+        <!-- Trust badges -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;">
+          {% for badge in (1..3) %}
+            <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:12px;text-align:center;">
+              {% if badge == 1 %}
+                <div style="font-size:20px;margin-bottom:6px;">🚀</div>
+                <div style="font-family:var(--font-heading);font-size:11px;font-weight:600;color:var(--text-secondary);">Fast AU Shipping</div>
+              {% elsif badge == 2 %}
+                <div style="font-size:20px;margin-bottom:6px;">🛡️</div>
+                <div style="font-family:var(--font-heading);font-size:11px;font-weight:600;color:var(--text-secondary);">30-Day Returns</div>
+              {% else %}
+                <div style="font-size:20px;margin-bottom:6px;">✅</div>
+                <div style="font-family:var(--font-heading);font-size:11px;font-weight:600;color:var(--text-secondary);">Secure Checkout</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Description -->
+        <div class="product-description">
+          {{ product.description }}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Related Products -->
+    {% assign related = collections['all'].products | where: 'id', '!=', product.id | limit: 4 %}
+    {% if related.size > 0 %}
+      <div style="margin-top:96px;">
+        <div class="section-header">
+          <span class="section-eyebrow">Keep Building</span>
+          <h2 class="section-title" style="font-size:clamp(24px,3vw,36px);">Complete Your <span class="gradient-text">Setup</span></h2>
+        </div>
+        <div class="products-grid">
+          {% for rproduct in collections['all'].products limit: 4 %}
+            {% unless rproduct.id == product.id %}
+              {% render 'product-card', product: rproduct %}
+            {% endunless %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<script>
+  // Variant selector logic
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pos = btn.dataset.option;
+      const val = btn.dataset.value;
+      // Update hidden select based on selected options
+      updateVariant();
+    });
+  });
+
+  function updateVariant() {
+    const selected = {};
+    document.querySelectorAll('.option-btn.selected').forEach(btn => {
+      selected[btn.dataset.option] = btn.dataset.value;
+    });
+
+    const variants = {{ product.variants | json }};
+    const match = variants.find(v => {
+      return v.options.every((opt, i) => selected[i+1] === opt || !selected[i+1]);
+    });
+
+    if (match) {
+      document.getElementById('variant-select').value = match.id;
+    }
+  }
+</script>

@@ -1,0 +1,68 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "GlowRig",
+    "theme_version": "1.0.0",
+    "theme_author": "GlowRig",
+    "theme_documentation_url": "https://glowrig.com.au",
+    "theme_support_url": "https://glowrig.com.au"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_bg_primary",
+        "label": "Background Primary",
+        "default": "#0a0a0f"
+      },
+      {
+        "type": "color",
+        "id": "color_bg_secondary",
+        "label": "Background Secondary",
+        "default": "#12121a"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_primary",
+        "label": "Accent Primary (Neon Purple)",
+        "default": "#b44fff"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_secondary",
+        "label": "Accent Secondary (Neon Cyan)",
+        "default": "#00f5ff"
+      },
+      {
+        "type": "color",
+        "id": "color_text_primary",
+        "label": "Text Primary",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_text_secondary",
+        "label": "Text Secondary",
+        "default": "#8888aa"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "font_heading",
+        "label": "Heading Font",
+        "default": "rajdhani_n7"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_body",
+        "label": "Body Font",
+        "default": "inter_n4"
+      }
+    ]
+  }
+]
