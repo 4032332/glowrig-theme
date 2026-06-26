@@ -37,6 +37,7 @@
         "col-mats": {
           "type": "collection_card",
           "settings": {
+            "collection": "desk-mats",
             "url": "/collections/desk-mats",
             "theme": "theme-purple",
             "bg_gradient": "linear-gradient(135deg,#0d0015 0%,#2a0050 50%,#0a001a 100%)",
@@ -49,6 +50,7 @@
         "col-lighting": {
           "type": "collection_card",
           "settings": {
+            "collection": "lighting",
             "url": "/collections/lighting",
             "theme": "theme-cyan",
             "bg_gradient": "linear-gradient(135deg,#000d1a 0%,#003344 50%,#001122 100%)",
@@ -61,6 +63,7 @@
         "col-org": {
           "type": "collection_card",
           "settings": {
+            "collection": "organisation",
             "url": "/collections/organisation",
             "theme": "theme-purple",
             "bg_gradient": "linear-gradient(135deg,#0d0d00 0%,#1a1a00 50%,#0a0a00 100%)",
@@ -73,6 +76,7 @@
         "col-bundles": {
           "type": "collection_card",
           "settings": {
+            "collection": "bundles",
             "url": "/collections/bundles",
             "theme": "theme-cyan",
             "bg_gradient": "linear-gradient(135deg,#0d0500 0%,#2a1500 50%,#0a0500 100%)",
@@ -101,6 +105,7 @@
     "featured-banner": {
       "type": "featured-banner",
       "settings": {
+        "collection": "desk-mats",
         "emoji": "🌌",
         "product_name": "Cosmic Series",
         "product_subtitle": "900 × 400mm extended coverage",
@@ -128,6 +133,9 @@
         "title": "Starter Rig Kit",
         "badge": "Bundle & Save",
         "subtitle": "Everything your desk needs. One checkout.",
+        "product1": "cosmic-desk-mat-galactic-series",
+        "product2": "usb-c-led-laptop-light-bar-touch-control-with-3-color-temperatures-anti-glare-screen-lamp-for-desktop-monitor",
+        "product3": "rgb-pickup-light-music-rhythm-lights-upgraded-usb-rechargeable-model-christmas-decoration-desktop-rgb-light-bar-music-rhythm",
         "price": "$109.95",
         "was_price": "$179.85",
         "save_amount": "$69.90",

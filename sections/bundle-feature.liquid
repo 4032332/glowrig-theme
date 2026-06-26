@@ -27,9 +27,28 @@
         </a>
       </div>
       <div class="bundle-products-visual">
-        <div class="bundle-product-img" style="display:flex;align-items:center;justify-content:center;font-size:36px;background:linear-gradient(135deg,#0d0015,#2a0050);">🌌</div>
-        <div class="bundle-product-img" style="display:flex;align-items:center;justify-content:center;font-size:36px;background:linear-gradient(135deg,#000d1a,#003344);">💡</div>
-        <div class="bundle-product-img" style="display:flex;align-items:center;justify-content:center;font-size:36px;background:linear-gradient(135deg,#0d000d,#2a0040);">🌈</div>
+        {% for bp_handle in (1..3) %}
+          {% if bp_handle == 1 %}{% assign bp = all_products[section.settings.product1] %}{% endif %}
+          {% if bp_handle == 2 %}{% assign bp = all_products[section.settings.product2] %}{% endif %}
+          {% if bp_handle == 3 %}{% assign bp = all_products[section.settings.product3] %}{% endif %}
+          {% assign bp_img = bp.featured_image %}
+          <div class="bundle-product-img" style="overflow:hidden;position:relative;">
+            {% if bp_img %}
+              <img
+                src="{{ bp_img | image_url: width: 400 }}"
+                alt="{{ bp.title | escape }}"
+                width="400"
+                height="400"
+                loading="lazy"
+                style="width:100%;height:100%;object-fit:cover;display:block;"
+              >
+              <div style="position:absolute;inset:0;background:rgba(10,10,15,0.3);"></div>
+              <div style="position:absolute;bottom:8px;left:8px;right:8px;font-family:var(--font-heading);font-size:10px;font-weight:600;color:rgba(255,255,255,0.85);letter-spacing:0.06em;text-transform:uppercase;line-height:1.3;">{{ bp.title }}</div>
+            {% else %}
+              <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;background:linear-gradient(135deg,#0d0015,#2a0050);">🎮</div>
+            {% endif %}
+          </div>
+        {% endfor %}
         <div class="bundle-product-img" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a0a0f,#1a1a2e);">
           <div style="text-align:center;">
             <div style="font-family:var(--font-display);font-size:28px;font-weight:900;color:var(--accent-purple);">{{ section.settings.save_percent }}</div>
@@ -45,76 +64,26 @@
 {
   "name": "Bundle Feature",
   "settings": [
-    {
-      "type": "text",
-      "id": "eyebrow",
-      "label": "Eyebrow",
-      "default": "Best Value"
-    },
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Title (highlighted)",
-      "default": "Starter Rig Kit"
-    },
-    {
-      "type": "text",
-      "id": "badge",
-      "label": "Badge",
-      "default": "Bundle & Save"
-    },
-    {
-      "type": "text",
-      "id": "subtitle",
-      "label": "Subtitle",
-      "default": "Everything your desk needs. One checkout."
-    },
-    {
-      "type": "text",
-      "id": "price",
-      "label": "Bundle price",
-      "default": "$109.95"
-    },
-    {
-      "type": "text",
-      "id": "was_price",
-      "label": "Was price (strikethrough)",
-      "default": "$179.85"
-    },
-    {
-      "type": "text",
-      "id": "save_amount",
-      "label": "Save amount",
-      "default": "$69.90"
-    },
-    {
-      "type": "text",
-      "id": "save_percent",
-      "label": "Save percent display",
-      "default": "35%"
-    },
-    {
-      "type": "text",
-      "id": "cta_label",
-      "label": "Button label",
-      "default": "Get the Bundle"
-    },
-    {
-      "type": "url",
-      "id": "cta_url",
-      "label": "Button URL"
-    }
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Best Value" },
+    { "type": "text", "id": "title", "label": "Title (highlighted)", "default": "Starter Rig Kit" },
+    { "type": "text", "id": "badge", "label": "Badge", "default": "Bundle & Save" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Everything your desk needs. One checkout." },
+    { "type": "product", "id": "product1", "label": "Bundle product 1 (image)" },
+    { "type": "product", "id": "product2", "label": "Bundle product 2 (image)" },
+    { "type": "product", "id": "product3", "label": "Bundle product 3 (image)" },
+    { "type": "text", "id": "price", "label": "Bundle price", "default": "$109.95" },
+    { "type": "text", "id": "was_price", "label": "Was price (strikethrough)", "default": "$179.85" },
+    { "type": "text", "id": "save_amount", "label": "Save amount", "default": "$69.90" },
+    { "type": "text", "id": "save_percent", "label": "Save percent display", "default": "35%" },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Get the Bundle" },
+    { "type": "url", "id": "cta_url", "label": "Button URL" }
   ],
   "blocks": [
     {
       "type": "item",
       "name": "Bundle item",
       "settings": [
-        {
-          "type": "text",
-          "id": "item",
-          "label": "Item description"
-        }
+        { "type": "text", "id": "item", "label": "Item description" }
       ]
     }
   ],

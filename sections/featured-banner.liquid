@@ -2,12 +2,32 @@
   <div class="container">
     <div class="featured-banner-inner">
       <div class="featured-banner-visual">
-        <div class="featured-banner-image" style="display:flex;align-items:center;justify-content:center;">
-          <div style="text-align:center;padding:40px;">
-            <div style="font-size:80px;margin-bottom:16px;">{{ section.settings.emoji }}</div>
-            <div style="font-family:var(--font-heading);font-size:20px;color:var(--accent-purple);">{{ section.settings.product_name }}</div>
-            <div style="font-size:14px;color:var(--text-muted);margin-top:8px;">{{ section.settings.product_subtitle }}</div>
-          </div>
+        {% assign banner_col = collections[section.settings.collection] %}
+        {% assign banner_img = nil %}
+        {% if banner_col.featured_image %}
+          {% assign banner_img = banner_col.featured_image %}
+        {% elsif banner_col.products.first.featured_image %}
+          {% assign banner_img = banner_col.products.first.featured_image %}
+        {% endif %}
+        <div class="featured-banner-image" style="overflow:hidden;position:relative;">
+          {% if banner_img %}
+            <img
+              src="{{ banner_img | image_url: width: 800 }}"
+              alt="{{ banner_img.alt | default: section.settings.product_name | escape }}"
+              width="800"
+              height="800"
+              style="width:100%;height:100%;object-fit:cover;display:block;"
+            >
+            <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,10,15,0.15) 0%,rgba(10,10,15,0.4) 100%);"></div>
+          {% else %}
+            <div style="display:flex;align-items:center;justify-content:center;height:100%;padding:40px;">
+              <div style="text-align:center;">
+                <div style="font-size:80px;margin-bottom:16px;">{{ section.settings.emoji }}</div>
+                <div style="font-family:var(--font-heading);font-size:20px;color:var(--accent-purple);">{{ section.settings.product_name }}</div>
+                <div style="font-size:14px;color:var(--text-muted);margin-top:8px;">{{ section.settings.product_subtitle }}</div>
+              </div>
+            </div>
+          {% endif %}
         </div>
       </div>
       <div>
@@ -35,76 +55,24 @@
 {
   "name": "Featured Banner",
   "settings": [
-    {
-      "type": "text",
-      "id": "emoji",
-      "label": "Product emoji",
-      "default": "🌌"
-    },
-    {
-      "type": "text",
-      "id": "product_name",
-      "label": "Product name",
-      "default": "Cosmic Series"
-    },
-    {
-      "type": "text",
-      "id": "product_subtitle",
-      "label": "Product subtitle",
-      "default": "900 × 400mm extended coverage"
-    },
-    {
-      "type": "text",
-      "id": "badge",
-      "label": "Badge text",
-      "default": "Fan Favourite"
-    },
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Title",
-      "default": "The Desk Mat That"
-    },
-    {
-      "type": "text",
-      "id": "title_highlight",
-      "label": "Title highlight",
-      "default": "Started It All"
-    },
-    {
-      "type": "textarea",
-      "id": "description",
-      "label": "Description",
-      "default": "Deep space photography turned into a full-desk experience. The Cosmic Series makes every other part of your setup look better just by being there."
-    },
-    {
-      "type": "text",
-      "id": "cta_label",
-      "label": "Button label",
-      "default": "Shop Desk Mats"
-    },
-    {
-      "type": "url",
-      "id": "cta_url",
-      "label": "Button URL"
-    },
-    {
-      "type": "text",
-      "id": "price_from",
-      "label": "Price display",
-      "default": "From $49.95"
-    }
+    { "type": "collection", "id": "collection", "label": "Collection (for image)" },
+    { "type": "text", "id": "emoji", "label": "Fallback emoji", "default": "🌌" },
+    { "type": "text", "id": "product_name", "label": "Product name (fallback)", "default": "Cosmic Series" },
+    { "type": "text", "id": "product_subtitle", "label": "Product subtitle (fallback)", "default": "900 × 400mm extended coverage" },
+    { "type": "text", "id": "badge", "label": "Badge text", "default": "Fan Favourite" },
+    { "type": "text", "id": "title", "label": "Title", "default": "The Desk Mat That" },
+    { "type": "text", "id": "title_highlight", "label": "Title highlight", "default": "Started It All" },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Deep space photography turned into a full-desk experience. The Cosmic Series makes every other part of your setup look better just by being there." },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Shop Desk Mats" },
+    { "type": "url", "id": "cta_url", "label": "Button URL" },
+    { "type": "text", "id": "price_from", "label": "Price display", "default": "From $49.95" }
   ],
   "blocks": [
     {
       "type": "feature",
       "name": "Feature bullet",
       "settings": [
-        {
-          "type": "text",
-          "id": "feature",
-          "label": "Feature text"
-        }
+        { "type": "text", "id": "feature", "label": "Feature text" }
       ]
     }
   ],
