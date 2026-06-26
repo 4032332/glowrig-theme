@@ -2,7 +2,7 @@
   {% for item in cart.items %}
     <div style="display:grid;grid-template-columns:72px 1fr;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border-subtle);">
       <div style="width:72px;height:72px;border-radius:var(--radius-md);overflow:hidden;background:var(--bg-secondary);">
-        {% if item.image %}<img src="{{ item.image | img_url: '150x150', crop: 'center' }}" alt="{{ item.title }}" style="width:100%;height:100%;object-fit:cover;">{% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:24px;">🎮</div>{% endif %}
+        {% if item.image %}<img src="{{ item.image | image_url: width: 150, height: 150, crop: 'center' }}" alt="{{ item.title | escape }}" width="150" height="150" style="width:100%;height:100%;object-fit:cover;">{% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:24px;">🎮</div>{% endif %}
       </div>
       <div>
         <div style="font-family:var(--font-heading);font-size:14px;font-weight:600;margin-bottom:4px;line-height:1.3;">{{ item.product.title }}</div>
@@ -18,6 +18,6 @@
   <div style="text-align:center;padding:48px 0;">
     <div style="font-size:48px;margin-bottom:16px;">🛒</div>
     <p style="color:var(--text-secondary);font-size:14px;">Your cart is empty</p>
-    <a href="/collections/all" style="display:inline-block;margin-top:16px;font-family:var(--font-heading);font-size:13px;color:var(--accent-purple);">Start Shopping →</a>
+    <a href="{{ routes.all_products_collection_url }}" style="display:inline-block;margin-top:16px;font-family:var(--font-heading);font-size:13px;color:var(--accent-purple);">Start Shopping →</a>
   </div>
 {% endif %}

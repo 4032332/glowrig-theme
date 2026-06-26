@@ -20,7 +20,7 @@
   <header class="site-header">
     <div class="container">
       <div class="header-inner">
-        <a href="/" class="site-logo" aria-label="{{ shop.name }}">
+        <a href="{{ routes.root_url }}" class="site-logo" aria-label="{{ shop.name }}">
           <svg class="logo-mark" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -36,12 +36,12 @@
         </a>
 
         <nav class="site-nav" aria-label="Main navigation">
-          <a href="/" class="nav-link">Home</a>
-          <a href="/collections/all" class="nav-link">Shop All</a>
-          <a href="/collections/desk-mats" class="nav-link">Desk Mats</a>
-          <a href="/collections/lighting" class="nav-link">Lighting</a>
-          <a href="/collections/organisation" class="nav-link">Organisation</a>
-          <a href="/collections/bundles" class="nav-link">Bundles</a>
+          <a href="{{ routes.root_url }}" class="nav-link">Home</a>
+          <a href="{{ routes.all_products_collection_url }}" class="nav-link">Shop All</a>
+          <a href="{{ routes.collections_url }}/desk-mats" class="nav-link">Desk Mats</a>
+          <a href="{{ routes.collections_url }}/lighting" class="nav-link">Lighting</a>
+          <a href="{{ routes.collections_url }}/organisation" class="nav-link">Organisation</a>
+          <a href="{{ routes.collections_url }}/bundles" class="nav-link">Bundles</a>
         </nav>
 
         <div class="header-actions">
@@ -61,12 +61,12 @@
   <!-- Mobile nav drawer -->
   <div class="mobile-nav-overlay"></div>
   <div class="mobile-nav">
-    <a href="/" class="mobile-nav-link">Home</a>
-    <a href="/collections/all" class="mobile-nav-link">Shop All</a>
-    <a href="/collections/desk-mats" class="mobile-nav-link">Desk Mats</a>
-    <a href="/collections/lighting" class="mobile-nav-link">Lighting</a>
-    <a href="/collections/organisation" class="mobile-nav-link">Organisation</a>
-    <a href="/collections/bundles" class="mobile-nav-link">Bundles</a>
+    <a href="{{ routes.root_url }}" class="mobile-nav-link">Home</a>
+    <a href="{{ routes.all_products_collection_url }}" class="mobile-nav-link">Shop All</a>
+    <a href="{{ routes.collections_url }}/desk-mats" class="mobile-nav-link">Desk Mats</a>
+    <a href="{{ routes.collections_url }}/lighting" class="mobile-nav-link">Lighting</a>
+    <a href="{{ routes.collections_url }}/organisation" class="mobile-nav-link">Organisation</a>
+    <a href="{{ routes.collections_url }}/bundles" class="mobile-nav-link">Bundles</a>
   </div>
 
   <main id="main-content" tabindex="-1">{{ content_for_layout }}</main>
@@ -92,11 +92,11 @@
         <div>
           <h3 class="footer-heading">Shop</h3>
           <ul class="footer-links">
-            <li><a href="/collections/all">All Products</a></li>
-            <li><a href="/collections/desk-mats">Desk Mats</a></li>
-            <li><a href="/collections/lighting">Lighting</a></li>
-            <li><a href="/collections/organisation">Organisation</a></li>
-            <li><a href="/collections/bundles">Bundles</a></li>
+            <li><a href="{{ routes.all_products_collection_url }}">All Products</a></li>
+            <li><a href="{{ routes.collections_url }}/desk-mats">Desk Mats</a></li>
+            <li><a href="{{ routes.collections_url }}/lighting">Lighting</a></li>
+            <li><a href="{{ routes.collections_url }}/organisation">Organisation</a></li>
+            <li><a href="{{ routes.collections_url }}/bundles">Bundles</a></li>
           </ul>
         </div>
         <div>
@@ -136,14 +136,14 @@
     <div class="cart-drawer-body" id="cart-drawer-items">{% render 'cart-drawer-items' %}</div>
     <div class="cart-drawer-footer">
       <div class="cart-subtotal"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
-      <a href="/checkout" class="btn btn-primary btn-full">Checkout</a>
+      <a href="{{ routes.cart_url }}/checkout" class="btn btn-primary btn-full">Checkout</a>
     </div>
   </div>
 
   <div class="search-overlay" role="dialog" aria-label="Search">
     <div class="search-box">
       <button data-search-close style="position:absolute;top:40px;right:24px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;font-family:var(--font-heading);">ESC</button>
-      <form action="/search" method="get">
+      <form action="{{ routes.search_url }}" method="get">
         <input type="search" name="q" class="search-input" placeholder="Search desk mats, lighting, stands..." autocomplete="off">
       </form>
     </div>
