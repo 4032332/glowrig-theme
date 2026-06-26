@@ -88,48 +88,45 @@ const gsapAnimations={init(){
     }
   }
 
+  // Helper: animate only on scroll-into-view; elements stay naturally visible until then
+  function onEnter(trigger,fn,start){
+    start=start||'top 85%';
+    ScrollTrigger.create({trigger,start,once:true,onEnter:fn});
+  }
+
   // ── Section headers ──────────────────────────────────────────────────────
   gsap.utils.toArray('.section-header').forEach(el=>{
-    gsap.from(el,{y:-24,opacity:0,duration:0.7,ease:'power3.out',
-      scrollTrigger:{trigger:el,start:'top 85%',toggleActions:'play none none none'}});
+    onEnter(el,()=>gsap.fromTo(el,{y:-20,opacity:0},{y:0,opacity:1,duration:0.7,ease:'power3.out'}));
   });
 
   // ── Product card stagger ─────────────────────────────────────────────────
-  // Skip if grid is already visible at init — prevents flash-then-fade bug on collection pages
   gsap.utils.toArray('.products-grid').forEach(grid=>{
-    const r=grid.getBoundingClientRect();
-    if(r.top<window.innerHeight&&r.bottom>0) return;
     const cards=grid.querySelectorAll('.product-card');
-    gsap.from(cards,{y:48,opacity:0,stagger:0.08,duration:0.6,ease:'power3.out',
-      scrollTrigger:{trigger:grid,start:'top 80%',toggleActions:'play none none none'}});
+    onEnter(grid,()=>gsap.fromTo(cards,{y:48,opacity:0},{y:0,opacity:1,stagger:0.08,duration:0.6,ease:'power3.out'}),'top 90%');
   });
 
   // ── Collection cards stagger ─────────────────────────────────────────────
   const colGrid=document.querySelector('.collections-grid');
   if(colGrid){
-    const r=colGrid.getBoundingClientRect();
-    if(!(r.top<window.innerHeight&&r.bottom>0)){
-      gsap.from(colGrid.querySelectorAll('.collection-card'),{y:48,opacity:0,stagger:0.1,duration:0.6,ease:'power3.out',
-        scrollTrigger:{trigger:colGrid,start:'top 80%',toggleActions:'play none none none'}});
-    }
+    onEnter(colGrid,()=>gsap.fromTo(colGrid.querySelectorAll('.collection-card'),{y:48,opacity:0},{y:0,opacity:1,stagger:0.1,duration:0.6,ease:'power3.out'}));
   }
 
   // ── Featured banner slide in ─────────────────────────────────────────────
   const bannerCols=document.querySelectorAll('.featured-banner-inner > *');
   if(bannerCols.length>=2){
-    gsap.from(bannerCols[0],{x:-56,opacity:0,duration:0.8,ease:'power3.out',
-      scrollTrigger:{trigger:bannerCols[0],start:'top 80%',toggleActions:'play none none none'}});
-    gsap.from(bannerCols[1],{x:56,opacity:0,duration:0.8,ease:'power3.out',
-      scrollTrigger:{trigger:bannerCols[1],start:'top 80%',toggleActions:'play none none none'}});
+    onEnter(bannerCols[0],()=>{
+      gsap.fromTo(bannerCols[0],{x:-56,opacity:0},{x:0,opacity:1,duration:0.8,ease:'power3.out'});
+      gsap.fromTo(bannerCols[1],{x:56,opacity:0},{x:0,opacity:1,duration:0.8,ease:'power3.out'});
+    });
   }
 
   // ── Bundle card scale in ─────────────────────────────────────────────────
-  gsap.from('.bundle-card',{scale:0.96,opacity:0,duration:0.7,ease:'power3.out',
-    scrollTrigger:{trigger:'.bundle-card',start:'top 80%',toggleActions:'play none none none'}});
+  const bundleCard=document.querySelector('.bundle-card');
+  if(bundleCard) onEnter(bundleCard,()=>gsap.fromTo(bundleCard,{scale:0.96,opacity:0},{scale:1,opacity:1,duration:0.7,ease:'power3.out'}));
 
   // ── Why cards stagger ────────────────────────────────────────────────────
-  gsap.from('.why-card',{y:40,opacity:0,stagger:0.1,duration:0.6,ease:'power3.out',
-    scrollTrigger:{trigger:'.why-grid',start:'top 80%',toggleActions:'play none none none'}});
+  const whyGrid=document.querySelector('.why-grid');
+  if(whyGrid) onEnter(whyGrid,()=>gsap.fromTo(whyGrid.querySelectorAll('.why-card'),{y:40,opacity:0},{y:0,opacity:1,stagger:0.1,duration:0.6,ease:'power3.out'}));
 
   // ── Count-up on hero stats ───────────────────────────────────────────────
   document.querySelectorAll('.hero-stat-value').forEach(el=>{

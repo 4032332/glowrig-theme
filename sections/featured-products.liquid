@@ -1,3 +1,9 @@
+{% assign fp_col = collections[section.settings.collection] %}
+{% if fp_col == blank or fp_col.products_count == 0 %}
+  {% assign fp_col = collections.all %}
+{% endif %}
+
+{% if fp_col.products_count > 0 %}
 <section class="products-section">
   <div class="container">
     <div class="section-header">
@@ -6,11 +12,7 @@
       <p class="section-desc">{{ section.settings.description }}</p>
     </div>
     <div class="products-grid stagger">
-      {% assign src_collection = collections[section.settings.collection] %}
-      {% if src_collection == blank or src_collection.products_count == 0 %}
-        {% assign src_collection = collections.all %}
-      {% endif %}
-      {% for product in src_collection.products limit: section.settings.product_limit %}
+      {% for product in fp_col.products limit: section.settings.product_limit %}
         {% render 'product-card', product: product %}
       {% endfor %}
     </div>
@@ -22,65 +24,24 @@
     </div>
   </div>
 </section>
+{% endif %}
 
 {% schema %}
 {
   "name": "Featured Products",
   "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Most Popular" },
+    { "type": "text", "id": "title", "label": "Title", "default": "The Ones" },
+    { "type": "text", "id": "title_highlight", "label": "Title highlight", "default": "Everyone's Running" },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "The products showing up in every setup tour, every stream overlay, every desk photo worth saving." },
+    { "type": "collection", "id": "collection", "label": "Collection to feature" },
     {
-      "type": "text",
-      "id": "eyebrow",
-      "label": "Eyebrow",
-      "default": "Most Popular"
+      "type": "range", "id": "product_limit", "label": "Number of products",
+      "min": 2, "max": 12, "step": 2, "default": 8
     },
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Title",
-      "default": "The Ones"
-    },
-    {
-      "type": "text",
-      "id": "title_highlight",
-      "label": "Title highlight",
-      "default": "Everyone's Running"
-    },
-    {
-      "type": "textarea",
-      "id": "description",
-      "label": "Description",
-      "default": "The products showing up in every setup tour, every stream overlay, every desk photo worth saving."
-    },
-    {
-      "type": "collection",
-      "id": "collection",
-      "label": "Collection to feature"
-    },
-    {
-      "type": "range",
-      "id": "product_limit",
-      "label": "Number of products",
-      "min": 2,
-      "max": 12,
-      "step": 2,
-      "default": 8
-    },
-    {
-      "type": "text",
-      "id": "cta_label",
-      "label": "CTA button label",
-      "default": "View All Products"
-    },
-    {
-      "type": "url",
-      "id": "cta_url",
-      "label": "CTA button URL"
-    }
+    { "type": "text", "id": "cta_label", "label": "CTA button label", "default": "View All Products" },
+    { "type": "url", "id": "cta_url", "label": "CTA button URL" }
   ],
-  "presets": [
-    {
-      "name": "Featured Products"
-    }
-  ]
+  "presets": [{ "name": "Featured Products" }]
 }
 {% endschema %}
