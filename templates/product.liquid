@@ -3,9 +3,9 @@
     <div class="product-page-grid">
       <div class="product-gallery">
         <div class="product-main-image">
-          {% if product.featured_image %}<img id="main-product-image" src="{{ product.featured_image | image_url: width: 800 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" width="800" height="800">{% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-card);font-size:64px;">🎮</div>{% endif %}
+          {% if product.featured_image %}<img id="main-product-image" src="{{ product.featured_image | image_url: width: 1200 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" width="1200" height="1200">{% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-card);font-size:64px;">🎮</div>{% endif %}
         </div>
-        {% if product.images.size > 1 %}<div class="product-thumbnails">{% for image in product.images %}<div class="product-thumb {% if forloop.first %}active{% endif %}" data-src="{{ image | image_url: width: 800 }}"><img src="{{ image | image_url: width: 150, height: 150, crop: 'center' }}" alt="{{ image.alt | default: product.title | escape }}" width="150" height="150" loading="lazy"></div>{% endfor %}</div>{% endif %}
+        {% if product.images.size > 1 %}<div class="product-thumbnails">{% for image in product.images %}<div class="product-thumb {% if forloop.first %}active{% endif %}" data-src="{{ image | image_url: width: 1200 }}"><img src="{{ image | image_url: width: 150, height: 150, crop: 'center' }}" alt="{{ image.alt | default: product.title | escape }}" width="150" height="150" loading="lazy"></div>{% endfor %}</div>{% endif %}
       </div>
       <div class="product-info">
         {% if product.collections.first %}<a href="{{ product.collections.first.url }}" style="font-size:12px;font-family:var(--font-heading);letter-spacing:0.1em;text-transform:uppercase;color:var(--accent-cyan);text-decoration:none;">← {{ product.collections.first.title }}</a>{% endif %}
@@ -57,5 +57,5 @@
 </div>
 <script>
 document.querySelectorAll('.option-btn').forEach(btn=>{btn.addEventListener('click',()=>{const group=btn.closest('.product-options');if(group)group.querySelectorAll('.option-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');updateVariant()})});
-function updateVariant(){const selected={};document.querySelectorAll('.option-btn.selected').forEach(btn=>{selected[btn.dataset.option]=btn.dataset.value});const variants={{ product.variants | json }};const match=variants.find(v=>v.options.every((opt,i)=>selected[i+1]===opt||!selected[i+1]));if(match)document.getElementById('variant-select').value=match.id}
+function updateVariant(){const selected={};document.querySelectorAll('.option-btn.selected').forEach(btn=>{selected[btn.dataset.option]=btn.dataset.value});const variants={{ product.variants | json }};const match=variants.find(v=>v.options.every((opt,i)=>selected[i+1]===opt||!selected[i+1]));if(!match)return;document.getElementById('variant-select').value=match.id;if(match.featured_image){const mainImg=document.getElementById('main-product-image');if(mainImg){mainImg.style.opacity='0';mainImg.style.transform='scale(0.97)';setTimeout(()=>{mainImg.src=match.featured_image.src;mainImg.style.opacity='1';mainImg.style.transform='scale(1)'},200)}}}
 </script>

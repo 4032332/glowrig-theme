@@ -18,7 +18,7 @@ const mobileNav={init(){const btn=document.querySelector('.mobile-menu-btn');con
 // ============================================
 // PRODUCT GALLERY
 // ============================================
-const productGallery={init(){const thumbs=document.querySelectorAll('.product-thumb');const mainImg=document.querySelector('.product-main-image img');thumbs.forEach(thumb=>{thumb.addEventListener('click',()=>{thumbs.forEach(t=>t.classList.remove('active'));thumb.classList.add('active');if(mainImg){mainImg.style.opacity='0';mainImg.style.transform='scale(0.97)';setTimeout(()=>{mainImg.src=thumb.querySelector('img')?.src||thumb.dataset.src;mainImg.style.opacity='1';mainImg.style.transform='scale(1)'},200)}})})}};
+const productGallery={init(){const thumbs=document.querySelectorAll('.product-thumb');const mainImg=document.querySelector('.product-main-image img');thumbs.forEach(thumb=>{thumb.addEventListener('click',()=>{thumbs.forEach(t=>t.classList.remove('active'));thumb.classList.add('active');if(mainImg){mainImg.style.opacity='0';mainImg.style.transform='scale(0.97)';setTimeout(()=>{mainImg.src=thumb.dataset.src||thumb.querySelector('img')?.src;mainImg.style.opacity='1';mainImg.style.transform='scale(1)'},200)}})})}};
 
 // ============================================
 // PRODUCT OPTIONS
