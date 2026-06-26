@@ -46,42 +46,116 @@ const ticker={messages:['⚡ Free shipping on orders over $75','🎮 New arrival
 const cursorTrail={init(){if(window.innerWidth<1024||window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;const trail=document.createElement('div');trail.style.cssText='position:fixed;width:6px;height:6px;border-radius:50%;background:var(--accent-purple);pointer-events:none;z-index:9999;filter:blur(1px);opacity:0;transition:opacity 0.3s;box-shadow:0 0 10px var(--accent-purple),0 0 20px rgba(180,79,255,0.4)';document.body.appendChild(trail);const ring=document.createElement('div');ring.style.cssText='position:fixed;width:28px;height:28px;border-radius:50%;border:1px solid rgba(180,79,255,0.4);pointer-events:none;z-index:9998;opacity:0;transition:opacity 0.3s';document.body.appendChild(ring);let mx=0,my=0,tx=0,ty=0,rx=0,ry=0,vis=false;document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;if(!vis){vis=true;trail.style.opacity='1';ring.style.opacity='1'}});document.addEventListener('mouseleave',()=>{vis=false;trail.style.opacity='0';ring.style.opacity='0'});const animate=()=>{tx+=(mx-tx)*0.2;ty+=(my-ty)*0.2;rx+=(mx-rx)*0.08;ry+=(my-ry)*0.08;trail.style.left=(tx-3)+'px';trail.style.top=(ty-3)+'px';ring.style.left=(rx-14)+'px';ring.style.top=(ry-14)+'px';requestAnimationFrame(animate)};animate()}};
 
 // ============================================
-// ENHANCED SCROLL ANIMATIONS
+// GSAP ANIMATIONS (Phase 2)
 // ============================================
-const scrollAnimations={init(){if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-// Fade up — product cards, why cards, collection cards
-const fadeUpEls=document.querySelectorAll('.product-card,.why-card,.collection-card');fadeUpEls.forEach((el,i)=>{el.style.opacity='0';el.style.transform='translateY(40px)';el.style.transition='opacity 0.6s ease, transform 0.6s ease';el.style.transitionDelay=(i%4)*0.08+'s'});
-// Fade in from left/right — alternating sections
-document.querySelectorAll('.featured-banner-inner > *').forEach((el,i)=>{el.style.opacity='0';el.style.transform=i%2===0?'translateX(-48px)':'translateX(48px)';el.style.transition='opacity 0.7s ease, transform 0.7s ease'});
-// Scale in — bundle card, section headers
-document.querySelectorAll('.bundle-card').forEach(el=>{el.style.opacity='0';el.style.transform='scale(0.96)';el.style.transition='opacity 0.7s ease, transform 0.7s ease'});
-// Slide down — section eyebrows and titles
-document.querySelectorAll('.section-header').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(-20px)';el.style.transition='opacity 0.6s ease, transform 0.6s ease'});
-// Showcase cards
-document.querySelectorAll('.showcase-card').forEach((el,i)=>{el.style.opacity='0';el.style.transform='translateY(32px) scale(0.95)';el.style.transition=`opacity 0.6s ease ${i*0.12}s, transform 0.6s ease ${i*0.12}s`});
-// Hero text lines
-document.querySelectorAll('.hero-title,.hero-eyebrow,.hero-subtitle,.hero-cta-group,.hero-stats').forEach((el,i)=>{el.style.opacity='0';el.style.transform='translateY(24px)';el.style.transition=`opacity 0.7s ease ${0.1+i*0.12}s, transform 0.7s ease ${0.1+i*0.12}s`});
+const gsapAnimations={init(){
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  if(typeof gsap==='undefined'||typeof ScrollTrigger==='undefined')return;
 
-const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){const el=entry.target;el.style.opacity='1';el.style.transform='none';observer.unobserve(el)}})},{threshold:0.12,rootMargin:'0px 0px -30px 0px'});
-document.querySelectorAll('.product-card,.why-card,.collection-card,.featured-banner-inner > *,.bundle-card,.section-header,.showcase-card,.hero-title,.hero-eyebrow,.hero-subtitle,.hero-cta-group,.hero-stats').forEach(el=>observer.observe(el));
+  gsap.registerPlugin(ScrollTrigger);
 
-// Parallax on hero bg
-window.addEventListener('scroll',()=>{const hero=document.querySelector('.hero-section');if(!hero)return;const scroll=window.scrollY;const grid=hero.querySelector('.hero-grid');const gradient=hero.querySelector('.hero-bg-gradient');if(grid)grid.style.transform=`translateY(${scroll*0.15}px)`;if(gradient)gradient.style.transform=`translateY(${scroll*0.08}px)`},{passive:true});
+  // ── Lenis smooth scroll ──────────────────────────────────────────────────
+  if(typeof Lenis!=='undefined'){
+    const lenis=new Lenis({lerp:0.08,smooth:true,direction:'vertical'});
+    gsap.ticker.add(time=>lenis.raf(time*1000));
+    gsap.ticker.lagSmoothing(0);
+    ScrollTrigger.scrollerProxy(document.body,{
+      scrollTop(v){return arguments.length?lenis.scrollTo(v,{immediate:true}):lenis.scroll},
+      getBoundingClientRect(){return{top:0,left:0,width:window.innerWidth,height:window.innerHeight}},
+    });
+    lenis.on('scroll',ScrollTrigger.update);
+  }
 
-// Neon flicker on logo on load
-const logo=document.querySelector('.logo-text');if(logo){setTimeout(()=>{logo.style.transition='filter 0.1s';const flicker=[0,80,120,180,220,350];flicker.forEach((t,i)=>{setTimeout(()=>{logo.style.filter=i%2===0?'brightness(3) drop-shadow(0 0 8px #b44fff)':'brightness(1)'},t)});setTimeout(()=>{logo.style.filter='';logo.style.transition=''},400)},600)}
+  // ── Scroll progress bar ──────────────────────────────────────────────────
+  const bar=document.createElement('div');
+  bar.style.cssText='position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,#b44fff,#00f5ff);z-index:9999;width:0%;pointer-events:none;transform-origin:left';
+  document.body.appendChild(bar);
+  gsap.to(bar,{width:'100%',ease:'none',scrollTrigger:{trigger:document.body,start:'top top',end:'bottom bottom',scrub:0.3}});
 
-// Count-up on hero stats
-const stats=document.querySelectorAll('.hero-stat-value');const statObserver=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(!entry.isIntersecting)return;const el=entry.target;const text=el.textContent;const num=parseFloat(text.replace(/[^0-9.]/g,''));if(!num)return;const suffix=text.replace(/[0-9.]/g,'');let start=0;const dur=1200;const step=16;const inc=num/(dur/step);const timer=setInterval(()=>{start+=inc;if(start>=num){el.textContent=text;clearInterval(timer)}else{el.textContent=Math.floor(start)+suffix}},step);statObserver.unobserve(el)})},{threshold:0.5});stats.forEach(el=>statObserver.observe(el));
+  // ── Hero entrance sequence ───────────────────────────────────────────────
+  const hero=document.querySelector('.hero-section');
+  if(hero){
+    const tl=gsap.timeline({delay:0.15});
+    tl.from('.hero-eyebrow',{y:20,opacity:0,duration:0.6,ease:'power3.out'})
+      .from('.hero-title',{y:40,opacity:0,duration:0.8,ease:'power3.out'},'-=0.3')
+      .from('.hero-subtitle',{y:20,opacity:0,duration:0.6,ease:'power3.out'},'-=0.4')
+      .from('.hero-cta-group',{y:20,opacity:0,duration:0.5,ease:'power3.out'},'-=0.3')
+      .from('.hero-stats > *',{y:20,opacity:0,stagger:0.12,duration:0.5,ease:'power3.out'},'-=0.2')
+      .from('.showcase-card',{y:40,opacity:0,scale:0.94,stagger:0.1,duration:0.7,ease:'power3.out'},'-=0.5');
 
-// Hover glow ripple on product cards
-document.querySelectorAll('.product-card').forEach(card=>{card.addEventListener('mouseenter',e=>{const rect=card.getBoundingClientRect();const ripple=document.createElement('div');ripple.style.cssText=`position:absolute;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(180,79,255,0.15),transparent);pointer-events:none;transform:translate(-50%,-50%) scale(0);transition:transform 0.5s ease,opacity 0.5s ease;z-index:0;left:${e.clientX-rect.left}px;top:${e.clientY-rect.top}px`;card.style.position='relative';card.appendChild(ripple);requestAnimationFrame(()=>{ripple.style.transform='translate(-50%,-50%) scale(4)';ripple.style.opacity='0'});setTimeout(()=>ripple.remove(),500)})});
+    // Parallax on hero bg layers
+    gsap.to('.hero-grid',{y:'15%',ease:'none',scrollTrigger:{trigger:hero,start:'top top',end:'bottom top',scrub:true}});
+    gsap.to('.hero-bg-gradient',{y:'8%',ease:'none',scrollTrigger:{trigger:hero,start:'top top',end:'bottom top',scrub:true}});
 
-// Scroll progress bar
-const bar=document.createElement('div');bar.style.cssText='position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent-purple),var(--accent-cyan));z-index:9999;width:0%;transition:width 0.1s;pointer-events:none';document.body.appendChild(bar);window.addEventListener('scroll',()=>{const pct=(window.scrollY/(document.documentElement.scrollHeight-window.innerHeight))*100;bar.style.width=pct+'%'},{passive:true});
+    // Scroll-pinned hero title word reveal
+    const heroTitle=document.querySelector('.hero-title');
+    if(heroTitle){
+      const words=heroTitle.innerHTML.split(' ');
+      heroTitle.innerHTML=words.map(w=>`<span class="word-reveal" style="display:inline-block;overflow:hidden;"><span style="display:inline-block;">${w}&nbsp;</span></span>`).join('');
+      gsap.from('.hero-title .word-reveal > span',{
+        y:'110%',opacity:0,stagger:0.08,duration:0.7,ease:'power4.out',
+        scrollTrigger:{trigger:heroTitle,start:'top 85%',toggleActions:'play none none none'}
+      });
+    }
+  }
 
-// Section divider glow sweep
-document.querySelectorAll('.products-section::before').forEach(el=>{});
+  // ── Section headers ──────────────────────────────────────────────────────
+  gsap.utils.toArray('.section-header').forEach(el=>{
+    gsap.from(el,{y:-24,opacity:0,duration:0.7,ease:'power3.out',
+      scrollTrigger:{trigger:el,start:'top 85%',toggleActions:'play none none none'}});
+  });
+
+  // ── Product card stagger ─────────────────────────────────────────────────
+  gsap.utils.toArray('.products-grid').forEach(grid=>{
+    const cards=grid.querySelectorAll('.product-card');
+    gsap.from(cards,{y:48,opacity:0,stagger:0.08,duration:0.6,ease:'power3.out',
+      scrollTrigger:{trigger:grid,start:'top 80%',toggleActions:'play none none none'}});
+  });
+
+  // ── Collection cards stagger ─────────────────────────────────────────────
+  gsap.from('.collections-grid .collection-card',{y:48,opacity:0,stagger:0.1,duration:0.6,ease:'power3.out',
+    scrollTrigger:{trigger:'.collections-grid',start:'top 80%',toggleActions:'play none none none'}});
+
+  // ── Featured banner slide in ─────────────────────────────────────────────
+  const bannerCols=document.querySelectorAll('.featured-banner-inner > *');
+  if(bannerCols.length>=2){
+    gsap.from(bannerCols[0],{x:-56,opacity:0,duration:0.8,ease:'power3.out',
+      scrollTrigger:{trigger:bannerCols[0],start:'top 80%',toggleActions:'play none none none'}});
+    gsap.from(bannerCols[1],{x:56,opacity:0,duration:0.8,ease:'power3.out',
+      scrollTrigger:{trigger:bannerCols[1],start:'top 80%',toggleActions:'play none none none'}});
+  }
+
+  // ── Bundle card scale in ─────────────────────────────────────────────────
+  gsap.from('.bundle-card',{scale:0.96,opacity:0,duration:0.7,ease:'power3.out',
+    scrollTrigger:{trigger:'.bundle-card',start:'top 80%',toggleActions:'play none none none'}});
+
+  // ── Why cards stagger ────────────────────────────────────────────────────
+  gsap.from('.why-card',{y:40,opacity:0,stagger:0.1,duration:0.6,ease:'power3.out',
+    scrollTrigger:{trigger:'.why-grid',start:'top 80%',toggleActions:'play none none none'}});
+
+  // ── Count-up on hero stats ───────────────────────────────────────────────
+  document.querySelectorAll('.hero-stat-value').forEach(el=>{
+    const text=el.textContent;
+    const num=parseFloat(text.replace(/[^0-9.]/g,''));
+    if(!num)return;
+    const suffix=text.replace(/[0-9.]/g,'');
+    const obj={val:0};
+    gsap.to(obj,{val:num,duration:1.4,ease:'power2.out',
+      scrollTrigger:{trigger:el,start:'top 90%',toggleActions:'play none none none'},
+      onUpdate(){el.textContent=Math.floor(obj.val)+suffix}});
+  });
+
+  // ── Neon flicker on logo ─────────────────────────────────────────────────
+  const logo=document.querySelector('.logo-text');
+  if(logo){
+    const tl=gsap.timeline({delay:0.6});
+    tl.to(logo,{filter:'brightness(3) drop-shadow(0 0 8px #b44fff)',duration:0.08})
+      .to(logo,{filter:'brightness(1)',duration:0.06})
+      .to(logo,{filter:'brightness(3) drop-shadow(0 0 8px #b44fff)',duration:0.06})
+      .to(logo,{filter:'brightness(1)',duration:0.12})
+      .to(logo,{filter:'brightness(2) drop-shadow(0 0 4px #b44fff)',duration:0.08})
+      .to(logo,{filter:'brightness(1)',duration:0.16});
+  }
 }};
 
 // ============================================
@@ -102,8 +176,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   quickAdd.init();
   ticker.init();
   cursorTrail.init();
-  scrollAnimations.init();
   heroParticles.init();
+  // GSAP runs after other scripts load (defer order)
+  window.addEventListener('load',()=>gsapAnimations.init());
 });
 
 })();
