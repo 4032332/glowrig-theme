@@ -87,13 +87,11 @@ const gsapAnimations={init(){
     gsap.to('.hero-grid',{y:'15%',ease:'none',scrollTrigger:{trigger:hero,start:'top top',end:'bottom top',scrub:true}});
     gsap.to('.hero-bg-gradient',{y:'8%',ease:'none',scrollTrigger:{trigger:hero,start:'top top',end:'bottom top',scrub:true}});
 
-    // Scroll-pinned hero title word reveal
+    // Hero title reveal — animate child text nodes safely without touching HTML structure
     const heroTitle=document.querySelector('.hero-title');
     if(heroTitle){
-      const words=heroTitle.innerHTML.split(' ');
-      heroTitle.innerHTML=words.map(w=>`<span class="word-reveal" style="display:inline-block;overflow:hidden;"><span style="display:inline-block;">${w}&nbsp;</span></span>`).join('');
-      gsap.from('.hero-title .word-reveal > span',{
-        y:'110%',opacity:0,stagger:0.08,duration:0.7,ease:'power4.out',
+      gsap.from(heroTitle.childNodes,{
+        y:30,opacity:0,stagger:0.12,duration:0.7,ease:'power4.out',
         scrollTrigger:{trigger:heroTitle,start:'top 85%',toggleActions:'play none none none'}
       });
     }
