@@ -213,9 +213,9 @@ a:hover{color:var(--accent-purple)}
 .search-input{width:100%;background:var(--bg-card);border:1px solid var(--border-glow);border-radius:var(--radius-md);padding:18px 24px;font-family:var(--font-heading);font-size:18px;color:var(--text-primary);outline:none;box-shadow:var(--glow-purple)}
 .search-input::placeholder{color:var(--text-muted)}
 
-@media(max-width:1024px){.collections-grid,.products-grid{grid-template-columns:repeat(2,1fr)}.why-grid{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}.hero-content{grid-template-columns:1fr;gap:40px}.hero-visual{display:none}.featured-banner-inner,.bundle-card{grid-template-columns:1fr}.product-page-grid{grid-template-columns:1fr}.product-gallery{position:relative;top:0}}
+@media(max-width:1024px){.collections-grid,.products-grid{grid-template-columns:repeat(2,1fr)}.why-grid{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}.hero-content{grid-template-columns:1fr;gap:32px}.hero-visual{display:flex;order:1}.hero-text{order:2}.hero-aurora-wrap{height:340px}.featured-banner-inner,.bundle-card{grid-template-columns:1fr}.product-page-grid{grid-template-columns:1fr}.product-gallery{position:relative;top:0}}
 @media(max-width:768px){.site-nav{display:none}.mobile-menu-btn{display:flex}.collections-grid,.products-grid{grid-template-columns:1fr 1fr;gap:12px}.why-grid{grid-template-columns:1fr 1fr;gap:16px}.footer-grid{grid-template-columns:1fr}.cart-drawer{width:100vw}.bundle-card{padding:28px}}
-@media(max-width:480px){.container{padding:0 16px}.collections-grid,.products-grid,.why-grid{grid-template-columns:1fr}.hero-cta-group{flex-direction:column}.btn{width:100%}}
+@media(max-width:480px){.container{padding:0 16px}.collections-grid,.products-grid,.why-grid{grid-template-columns:1fr}.hero-cta-group{flex-direction:column}.btn{width:100%}.hero-aurora-wrap{height:280px}}
 
 @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes glow-pulse{0%,100%{box-shadow:0 0 20px rgba(180,79,255,0.3)}50%{box-shadow:0 0 40px rgba(180,79,255,0.6),0 0 80px rgba(180,79,255,0.2)}}
