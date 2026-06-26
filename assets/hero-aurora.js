@@ -1,4 +1,4 @@
-/* hero-aurora.js — atom model + aurora backdrop for GlowRig hero */
+/* hero-aurora.js — rotating particle sphere for GlowRig hero */
 (function () {
   'use strict';
 
@@ -9,7 +9,6 @@
   const PURPLE = [180, 79, 255];
   const CYAN   = [0, 245, 255];
   const PINK   = [255, 68, 170];
-  const WHITE  = [255, 255, 255];
 
   function rgba(c, a) { return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
 
@@ -27,30 +26,30 @@
 
   const heroEl = canvas.closest('.hero-section') || document.documentElement;
   heroEl.addEventListener('mousemove', function (e) {
-    const r = canvas.getBoundingClientRect();
-    mouse.tx = Math.max(0, Math.min(1, (e.clientX - r.left)  / (r.width  || 1)));
-    mouse.ty = Math.max(0, Math.min(1, (e.clientY - r.top)   / (r.height || 1)));
+    const r  = canvas.getBoundingClientRect();
+    mouse.tx = Math.max(0, Math.min(1, (e.clientX - r.left) / (r.width  || 1)));
+    mouse.ty = Math.max(0, Math.min(1, (e.clientY - r.top)  / (r.height || 1)));
   });
   heroEl.addEventListener('mouseleave', function () { mouse.tx = 0.5; mouse.ty = 0.5; });
 
-  // ── Background aurora bands (subtle, behind atom) ────────────────────────
-  var bands = [
-    { color: PURPLE, alpha: 0.22, speed: 3.5e-4, phase: 0.0,           yBase: 0.38, thick: 0.14 },
-    { color: CYAN,   alpha: 0.18, speed: 2.8e-4, phase: Math.PI * 0.7, yBase: 0.56, thick: 0.12 },
-    { color: PINK,   alpha: 0.10, speed: 3.0e-4, phase: Math.PI * 1.5, yBase: 0.47, thick: 0.09 },
+  // ── Background aurora bands ───────────────────────────────────────────────
+  const bands = [
+    { color: PURPLE, alpha: 0.20, speed: 3.5e-4, phase: 0.0,           yBase: 0.36, thick: 0.13 },
+    { color: CYAN,   alpha: 0.16, speed: 2.8e-4, phase: Math.PI * 0.7, yBase: 0.58, thick: 0.11 },
+    { color: PINK,   alpha: 0.09, speed: 3.0e-4, phase: Math.PI * 1.5, yBase: 0.47, thick: 0.08 },
   ];
 
   function drawBand(b, t) {
-    var mx   = (mouse.x - 0.5) * 40;
-    var yc   = H * b.yBase;
-    var half = H * b.thick;
-    var w = function (mul, off) { return Math.sin(t * b.speed * mul + b.phase + off) * H * 0.055; };
-    var ty = [yc - half + w(1.0, 0), yc - half * 0.8 + w(1.3, 1), yc - half * 1.1 + w(0.9, 2), yc - half + w(1.1, 3)];
-    var by = [yc + half - w(0.8, 1), yc + half * 1.1 - w(1.2, 2), yc + half * 0.9 - w(1.0, 3), yc + half - w(1.1, 0)];
-    var grad = ctx.createLinearGradient(0, yc - half, 0, yc + half);
+    const mx   = (mouse.x - 0.5) * 40;
+    const yc   = H * b.yBase;
+    const half = H * b.thick;
+    const w    = (mul, off) => Math.sin(t * b.speed * mul + b.phase + off) * H * 0.05;
+    const ty   = [yc - half + w(1.0, 0), yc - half * 0.8 + w(1.3, 1), yc - half * 1.1 + w(0.9, 2), yc - half + w(1.1, 3)];
+    const by   = [yc + half - w(0.8, 1), yc + half * 1.1 - w(1.2, 2), yc + half * 0.9 - w(1.0, 3), yc + half - w(1.1, 0)];
+    const grad = ctx.createLinearGradient(0, yc - half, 0, yc + half);
     grad.addColorStop(0,    rgba(b.color, 0));
     grad.addColorStop(0.35, rgba(b.color, b.alpha * 0.4));
-    grad.addColorStop(0.50, rgba(b.color, b.alpha));
+    grad.addColorStop(0.5,  rgba(b.color, b.alpha));
     grad.addColorStop(0.65, rgba(b.color, b.alpha * 0.4));
     grad.addColorStop(1,    rgba(b.color, 0));
     ctx.save();
@@ -66,175 +65,159 @@
     ctx.restore();
   }
 
-  // ── Atom: orbital ring definitions ───────────────────────────────────────
-  // Each orbit is an ellipse drawn at rotation `rot`.
-  // `ry` is the compressed vertical radius — determines apparent 3D tilt.
-  // `depthFactor` (0–1) controls how much depth shading applies to electrons.
-  // A depthFactor of 1 = strongly tilted ring; 0 = ring facing camera.
-  var ORBIT_R = Math.min(W, H) * 0.32; // set at render time
-  var orbits = [
-    { color: PURPLE, rot: 0,              rx: 1.0, ryFrac: 0.22, speed:  1.4e-3, depthFactor: 0.95, electrons: [0, Math.PI] },
-    { color: CYAN,   rot: Math.PI / 3,    rx: 0.9, ryFrac: 0.30, speed: -1.1e-3, depthFactor: 0.85, electrons: [Math.PI * 0.5, Math.PI * 1.5] },
-    { color: PINK,   rot: Math.PI * 2/3,  rx: 0.85,ryFrac: 0.18, speed:  1.7e-3, depthFactor: 0.92, electrons: [Math.PI * 0.25, Math.PI * 1.25] },
-  ];
+  // ── Particle sphere ───────────────────────────────────────────────────────
+  // Particles live on the surface of a unit sphere using spherical coordinates.
+  // theta = polar angle [0, PI], phi = azimuthal angle [0, 2PI].
+  // Each particle has its own angular drift (dPhi, dTheta) so they wander
+  // continuously — the "electron bouncing" effect.
 
-  // ── Nucleus ──────────────────────────────────────────────────────────────
-  var nucleusPulse = 0;
+  const PALETTE = [PURPLE, PURPLE, CYAN, CYAN, PINK];
 
-  function drawNucleus(t) {
-    // Slow pulse
-    var pulse = 1 + 0.08 * Math.sin(t * 0.0018);
-    var nr = 14 * pulse;
+  const particles = Array.from({ length: 65 }, function () {
+    // Uniform distribution on sphere surface (avoid pole clustering)
+    const theta = Math.acos(2 * Math.random() - 1);
+    const phi   = Math.random() * Math.PI * 2;
+    return {
+      theta:      theta,
+      phi:        phi,
+      // Angular velocity — randomised so some zip, some drift
+      dPhi:       (Math.random() - 0.5) * 0.0030,
+      dTheta:     (Math.random() - 0.5) * 0.0020,
+      // Random kick strength and phase for irregular jitter
+      kickAmp:    0.0005 + Math.random() * 0.0012,
+      kickSpeed:  0.0008 + Math.random() * 0.0015,
+      kickPhase:  Math.random() * Math.PI * 2,
+      color:      PALETTE[Math.floor(Math.random() * PALETTE.length)],
+      baseAlpha:  0.55 + Math.random() * 0.45,
+      baseSize:   1.5  + Math.random() * 2.5,
+      pulseSpeed: 0.0012 + Math.random() * 0.0018,
+      pulsePhase: Math.random() * Math.PI * 2,
+    };
+  });
 
-    // Outer glow
-    var og = ctx.createRadialGradient(cx, cy, 0, cx, cy, nr * 5);
-    og.addColorStop(0,    rgba(WHITE,  0.25));
-    og.addColorStop(0.15, rgba(PURPLE, 0.45));
-    og.addColorStop(0.40, rgba(CYAN,   0.18));
-    og.addColorStop(1,    rgba(PURPLE, 0));
-    ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.fillStyle = og;
-    ctx.beginPath();
-    ctx.arc(cx, cy, nr * 5, 0, Math.PI * 2);
-    ctx.fill();
+  // Auto-rotation angle accumulator
+  let rotY = 0;
+  let lastT = null;
 
-    // Core
-    var cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, nr);
-    cg.addColorStop(0,   rgba(WHITE,  0.95));
-    cg.addColorStop(0.4, rgba(CYAN,   0.80));
-    cg.addColorStop(0.8, rgba(PURPLE, 0.60));
-    cg.addColorStop(1,   rgba(PURPLE, 0));
-    ctx.fillStyle = cg;
-    ctx.beginPath();
-    ctx.arc(cx, cy, nr, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
+  function updateAndDraw(t) {
+    const dt = lastT === null ? 16 : Math.min(t - lastT, 50);
+    lastT = t;
 
-  // ── Draw one orbital ring (ellipse with back half dashed) ─────────────────
-  function drawRing(o, rx, ry) {
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate(o.rot);
+    // Accumulate Y-axis rotation
+    rotY += dt * 0.00045;
 
-    // Back half — dashed, faint
-    ctx.beginPath();
-    ctx.setLineDash([3, 7]);
-    ctx.strokeStyle = rgba(o.color, 0.18);
-    ctx.lineWidth = 1;
-    // Back half of ellipse runs from π to 2π (sin < 0 = behind)
-    // Draw as a manual arc using parametric points
-    ctx.ellipse(0, 0, rx, ry, 0, Math.PI, Math.PI * 2, false);
-    ctx.stroke();
+    // Mouse adds slight tilt (X-axis) and extra spin (Y-axis)
+    const extraY  = (mouse.x - 0.5) *  0.6;
+    const extraX  = (mouse.y - 0.5) * -0.3;
+    const totalY  = rotY + extraY;
+    const cosY    = Math.cos(totalY);
+    const sinY    = Math.sin(totalY);
+    const cosX    = Math.cos(extraX);
+    const sinX    = Math.sin(extraX);
 
-    // Front half — solid, brighter
-    ctx.beginPath();
-    ctx.setLineDash([]);
-    ctx.strokeStyle = rgba(o.color, 0.38);
-    ctx.lineWidth = 1;
-    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI, false);
-    ctx.stroke();
+    // Update each particle's position on the sphere surface
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
 
-    ctx.restore();
-  }
+      // Jitter: add a time-varying kick to angular velocity
+      const kick = p.kickAmp * Math.sin(t * p.kickSpeed + p.kickPhase);
+      p.phi   += p.dPhi   + kick;
+      p.theta += p.dTheta + kick * 0.5;
 
-  // ── Draw one electron with glow and depth shading ────────────────────────
-  function drawElectron(o, phase, t, rx, ry) {
-    var angle = t * o.speed + phase;
+      // Bounce theta off the poles so particles don't cluster
+      if (p.theta < 0.08)             { p.theta = 0.08;             p.dTheta = Math.abs(p.dTheta); }
+      if (p.theta > Math.PI - 0.08)   { p.theta = Math.PI - 0.08;   p.dTheta = -Math.abs(p.dTheta); }
 
-    // Position on the ellipse (pre-rotation)
-    var lx = rx * Math.cos(angle);
-    var ly = ry * Math.sin(angle);
+      // 3D position on unit sphere
+      const sinT = Math.sin(p.theta);
+      const sx   = sinT * Math.cos(p.phi);
+      const sy   = sinT * Math.sin(p.phi);
+      const sz   = Math.cos(p.theta);
 
-    // Rotate into canvas space
-    var cos = Math.cos(o.rot);
-    var sin = Math.sin(o.rot);
-    var ex  = cx + lx * cos - ly * sin;
-    var ey  = cy + lx * sin + ly * cos;
+      // Rotate around Y axis
+      const x1 =  sx * cosY + sz * sinY;
+      const y1 =  sy;
+      const z1 = -sx * sinY + sz * cosY;
 
-    // Depth: sin(angle) > 0 → front half (coming toward viewer)
-    var z = Math.sin(angle) * o.depthFactor; // -1 (back) to +1 (front)
+      // Rotate around X axis (mouse tilt)
+      const x2 =  x1;
+      const y2 =  y1 * cosX - z1 * sinX;
+      const z2 =  y1 * sinX + z1 * cosX;
 
-    // Skip electrons deep in the back (behind the nucleus obscures them)
-    var baseAlpha = 0.55 + z * 0.35;
-    var size      = 3.5 + z * 1.8;
-    var glowRad   = size * 4.5;
-
-    // Glow
-    var grd = ctx.createRadialGradient(ex, ey, 0, ex, ey, glowRad);
-    grd.addColorStop(0,    rgba(WHITE,    baseAlpha * 0.9));
-    grd.addColorStop(0.15, rgba(o.color,  baseAlpha));
-    grd.addColorStop(0.50, rgba(o.color,  baseAlpha * 0.35));
-    grd.addColorStop(1,    rgba(o.color,  0));
-
-    ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.fillStyle = grd;
-    ctx.beginPath();
-    ctx.arc(ex, ey, glowRad, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Bright core dot
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.fillStyle = rgba(WHITE, baseAlpha * 0.85);
-    ctx.beginPath();
-    ctx.arc(ex, ey, size * 0.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-
-    return { x: ex, y: ey, z: z };
-  }
-
-  // ── Main render ──────────────────────────────────────────────────────────
-  function render(t) {
-    // Mouse parallax: slight tilt of the whole scene
-    var tiltX = (mouse.x - 0.5) * 0.18;
-    var tiltY = (mouse.y - 0.5) * 0.10;
-
-    ctx.clearRect(0, 0, W, H);
-
-    // Background aurora
-    for (var i = 0; i < bands.length; i++) drawBand(bands[i], t);
-
-    // Compute orbit radii relative to current canvas size
-    var baseR = Math.min(W, H) * 0.30;
-
-    // Rotate all orbits slightly with mouse
-    for (var i = 0; i < orbits.length; i++) {
-      var o  = orbits[i];
-      var rx = baseR * o.rx;
-      var ry = rx * o.ryFrac;
-
-      // Apply mouse tilt as a small rotation offset to each orbit
-      var savedRot = o.rot;
-      o.rot = o.rot + tiltX * (i % 2 === 0 ? 1 : -1) * 0.12;
-
-      drawRing(o, rx, ry);
-
-      // Draw each electron on this orbit
-      for (var j = 0; j < o.electrons.length; j++) {
-        drawElectron(o, o.electrons[j], t, rx, ry);
-      }
-
-      o.rot = savedRot;
+      // Store screen-space result for sorted draw pass
+      p._x = x2;
+      p._y = y2;
+      p._z = z2;
     }
 
-    // Nucleus always on top
-    drawNucleus(t);
+    // Sort back-to-front so front particles render on top
+    particles.sort((a, b) => a._z - b._z);
+
+    // Sphere radius scales with the smaller canvas dimension
+    const R = Math.min(W, H) * 0.34;
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+
+      // Project to canvas (orthographic — no perspective divide needed at this scale)
+      const sx = cx + p._x * R;
+      const sy = cy + p._y * R;
+
+      // Depth shading: z ranges −1 (back) to +1 (front)
+      const depth = (p._z + 1) * 0.5;           // 0..1
+      const pulse = 0.65 + 0.35 * Math.sin(t * p.pulseSpeed + p.pulsePhase);
+      const alpha = p.baseAlpha * (0.12 + 0.88 * depth) * pulse;
+      const size  = p.baseSize  * (0.25 + 0.75 * depth);
+      const glowR = size * 5.5;
+
+      // Glow gradient
+      const grd = ctx.createRadialGradient(sx, sy, 0, sx, sy, glowR);
+      grd.addColorStop(0,   rgba(p.color, alpha));
+      grd.addColorStop(0.4, rgba(p.color, alpha * 0.35));
+      grd.addColorStop(1,   rgba(p.color, 0));
+
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.arc(sx, sy, glowR, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
   }
 
-  var raf;
+  // ── Subtle sphere ambient glow (defines the shape even at low density) ────
+  function drawSphereGlow() {
+    const R = Math.min(W, H) * 0.34;
+    const g = ctx.createRadialGradient(cx, cy, R * 0.4, cx, cy, R * 1.1);
+    g.addColorStop(0,   rgba(PURPLE, 0));
+    g.addColorStop(0.7, rgba(PURPLE, 0.04));
+    g.addColorStop(1,   rgba(PURPLE, 0));
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R * 1.1, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // ── Animation loop ────────────────────────────────────────────────────────
+  let raf;
   function frame(t) {
     mouse.x += (mouse.tx - mouse.x) * 0.05;
     mouse.y += (mouse.ty - mouse.y) * 0.05;
-    render(t);
+
+    ctx.clearRect(0, 0, W, H);
+    for (let i = 0; i < bands.length; i++) drawBand(bands[i], t);
+    drawSphereGlow();
+    updateAndDraw(t);
+
     raf = requestAnimationFrame(frame);
   }
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    setTimeout(function () { resize(); render(1200); }, 50);
+    setTimeout(function () { resize(); ctx.clearRect(0, 0, W, H); updateAndDraw(1200); }, 50);
   } else {
     raf = requestAnimationFrame(frame);
   }
