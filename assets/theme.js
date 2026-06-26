@@ -95,15 +95,24 @@ const gsapAnimations={init(){
   });
 
   // ── Product card stagger ─────────────────────────────────────────────────
+  // Skip if grid is already visible at init — prevents flash-then-fade bug on collection pages
   gsap.utils.toArray('.products-grid').forEach(grid=>{
+    const r=grid.getBoundingClientRect();
+    if(r.top<window.innerHeight&&r.bottom>0) return;
     const cards=grid.querySelectorAll('.product-card');
     gsap.from(cards,{y:48,opacity:0,stagger:0.08,duration:0.6,ease:'power3.out',
       scrollTrigger:{trigger:grid,start:'top 80%',toggleActions:'play none none none'}});
   });
 
   // ── Collection cards stagger ─────────────────────────────────────────────
-  gsap.from('.collections-grid .collection-card',{y:48,opacity:0,stagger:0.1,duration:0.6,ease:'power3.out',
-    scrollTrigger:{trigger:'.collections-grid',start:'top 80%',toggleActions:'play none none none'}});
+  const colGrid=document.querySelector('.collections-grid');
+  if(colGrid){
+    const r=colGrid.getBoundingClientRect();
+    if(!(r.top<window.innerHeight&&r.bottom>0)){
+      gsap.from(colGrid.querySelectorAll('.collection-card'),{y:48,opacity:0,stagger:0.1,duration:0.6,ease:'power3.out',
+        scrollTrigger:{trigger:colGrid,start:'top 80%',toggleActions:'play none none none'}});
+    }
+  }
 
   // ── Featured banner slide in ─────────────────────────────────────────────
   const bannerCols=document.querySelectorAll('.featured-banner-inner > *');
