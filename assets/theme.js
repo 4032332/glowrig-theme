@@ -56,14 +56,11 @@ const gsapAnimations={init(){
 
   // ── Lenis smooth scroll ──────────────────────────────────────────────────
   if(typeof Lenis!=='undefined'){
-    const lenis=new Lenis({lerp:0.08,smooth:true,direction:'vertical'});
+    const lenis=new Lenis({lerp:0.12,smoothWheel:true,wheelMultiplier:1.2});
+    lenis.on('scroll',ScrollTrigger.update);
     gsap.ticker.add(time=>lenis.raf(time*1000));
     gsap.ticker.lagSmoothing(0);
-    ScrollTrigger.scrollerProxy(document.body,{
-      scrollTop(v){return arguments.length?lenis.scrollTo(v,{immediate:true}):lenis.scroll},
-      getBoundingClientRect(){return{top:0,left:0,width:window.innerWidth,height:window.innerHeight}},
-    });
-    lenis.on('scroll',ScrollTrigger.update);
+    setTimeout(()=>ScrollTrigger.refresh(),300);
   }
 
   // ── Scroll progress bar ──────────────────────────────────────────────────
