@@ -6,32 +6,13 @@
       <p class="section-desc">{{ section.settings.description }}</p>
     </div>
     <div class="products-grid stagger">
-      {% assign featured_collection = collections[section.settings.collection] %}
-      {% if featured_collection != blank %}
-        {% for product in featured_collection.products limit: section.settings.product_limit %}
-          {% render 'product-card', product: product %}
-        {% endfor %}
-      {% else %}
-        {% for product in collections.all.products limit: section.settings.product_limit %}
-          {% render 'product-card', product: product %}
-        {% else %}
-          {% for i in (1..4) %}
-            <div class="product-card">
-              <div class="product-card-image" style="background:var(--bg-card);display:flex;align-items:center;justify-content:center;">
-                <div style="text-align:center;color:var(--text-muted);">
-                  <div style="font-size:40px;margin-bottom:8px;">🎮</div>
-                  <div style="font-size:12px;">Coming Soon</div>
-                </div>
-              </div>
-              <div class="product-card-body">
-                <div class="product-collection">GlowRig</div>
-                <div class="product-title">New Product</div>
-                <div class="product-price-row"><span class="product-price">—</span></div>
-              </div>
-            </div>
-          {% endfor %}
-        {% endfor %}
+      {% assign src_collection = collections[section.settings.collection] %}
+      {% if src_collection == blank or src_collection.products_count == 0 %}
+        {% assign src_collection = collections.all %}
       {% endif %}
+      {% for product in src_collection.products limit: section.settings.product_limit %}
+        {% render 'product-card', product: product %}
+      {% endfor %}
     </div>
     <div style="text-align:center;margin-top:48px;">
       <a href="{{ section.settings.cta_url }}" class="btn btn-outline">

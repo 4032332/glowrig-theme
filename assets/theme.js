@@ -54,14 +54,8 @@ const gsapAnimations={init(){
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // ── Lenis smooth scroll ──────────────────────────────────────────────────
-  if(typeof Lenis!=='undefined'){
-    const lenis=new Lenis({lerp:0.12,smoothWheel:true,wheelMultiplier:1.2});
-    lenis.on('scroll',ScrollTrigger.update);
-    gsap.ticker.add(time=>lenis.raf(time*1000));
-    gsap.ticker.lagSmoothing(0);
-    setTimeout(()=>ScrollTrigger.refresh(),300);
-  }
+  // Refresh ScrollTrigger after layout settles
+  setTimeout(()=>ScrollTrigger.refresh(),400);
 
   // ── Scroll progress bar ──────────────────────────────────────────────────
   const bar=document.createElement('div');
