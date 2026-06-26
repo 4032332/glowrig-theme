@@ -1,0 +1,58 @@
+{
+  "general": {
+    "404": {
+      "title": "Page not found",
+      "body": "The page you're looking for doesn't exist.",
+      "link": "Go back home"
+    },
+    "cart": {
+      "title": "Your cart",
+      "empty": "Your cart is empty",
+      "add_to_cart": "Add to cart",
+      "checkout": "Checkout",
+      "free_shipping_threshold": "$75",
+      "free_shipping_message": "Free shipping on orders over $75"
+    },
+    "search": {
+      "placeholder": "Search GlowRig...",
+      "submit": "Search",
+      "no_results": "No results for"
+    },
+    "navigation": {
+      "menu": "Menu",
+      "close": "Close"
+    },
+    "newsletter": {
+      "label": "Email address",
+      "submit": "Subscribe"
+    }
+  },
+  "products": {
+    "add_to_cart": "Add to cart",
+    "sold_out": "Sold out",
+    "unavailable": "Unavailable",
+    "from": "From",
+    "sale": "Sale",
+    "new": "New"
+  },
+  "collections": {
+    "all": "All products",
+    "sort_by": "Sort by",
+    "sort_options": {
+      "manual": "Featured",
+      "best_selling": "Best selling",
+      "title_ascending": "A–Z",
+      "title_descending": "Z–A",
+      "price_ascending": "Price: low to high",
+      "price_descending": "Price: high to low",
+      "created_ascending": "Oldest first",
+      "created_descending": "Newest first"
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "close_modal": "Close",
+    "open_cart": "Open cart",
+    "cart_count": "Cart ({{ count }} items)"
+  }
+}

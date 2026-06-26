@@ -1,0 +1,72 @@
+<section style="padding:80px 0;background:var(--bg-primary);position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(180,79,255,0.08) 0%,transparent 70%);pointer-events:none;"></div>
+  <div class="container" style="position:relative;z-index:1;text-align:center;">
+    <span class="section-eyebrow">{{ section.settings.eyebrow }}</span>
+    <h2 class="section-title" style="font-size:clamp(24px,3.5vw,42px);margin-bottom:12px;">
+      {{ section.settings.title }} <span class="gradient-text">{{ section.settings.title_highlight }}</span>
+    </h2>
+    <p style="color:var(--text-secondary);margin-bottom:36px;font-size:14px;">{{ section.settings.description }}</p>
+    {% form 'customer' %}
+      <div style="display:flex;gap:12px;max-width:460px;margin:0 auto;flex-wrap:wrap;">
+        <input
+          type="email"
+          name="contact[email]"
+          placeholder="{{ section.settings.placeholder }}"
+          required
+          style="flex:1;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:14px 18px;color:var(--text-primary);font-family:var(--font-body);font-size:14px;outline:none;min-width:200px;"
+        >
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <button type="submit" class="btn btn-primary">{{ section.settings.button_label }}</button>
+      </div>
+    {% endform %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Email Signup",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Stay in the Loop"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "New drops. Exclusive deals."
+    },
+    {
+      "type": "text",
+      "id": "title_highlight",
+      "label": "Title highlight",
+      "default": "Your setup, upgraded."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Join the GlowRig community. No spam — just new product alerts and member-only discounts."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Input placeholder",
+      "default": "your@email.com"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Subscribe"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Email Signup"
+    }
+  ]
+}
+{% endschema %}

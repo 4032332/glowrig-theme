@@ -1,0 +1,132 @@
+<section class="bundle-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow">{{ section.settings.eyebrow }}</span>
+      <h2 class="section-title">The <span class="gradient-text">{{ section.settings.title }}</span></h2>
+    </div>
+    <div class="bundle-card">
+      <div>
+        <span class="bundle-tag">⚡ {{ section.settings.badge }}</span>
+        <h3 class="bundle-title">{{ section.settings.subtitle }}</h3>
+        <ul class="bundle-includes">
+          {% for block in section.blocks %}
+            <li {{ block.shopify_attributes }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              {{ block.settings.item }}
+            </li>
+          {% endfor %}
+        </ul>
+        <div class="bundle-price-group">
+          <span class="bundle-price">{{ section.settings.price }}</span>
+          <span class="bundle-was">{{ section.settings.was_price }}</span>
+          <span class="bundle-save">Save {{ section.settings.save_amount }}</span>
+        </div>
+        <a href="{{ section.settings.cta_url }}" class="btn btn-primary">
+          {{ section.settings.cta_label }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="bundle-products-visual">
+        <div class="bundle-product-img" style="display:flex;align-items:center;justify-content:center;font-size:36px;background:linear-gradient(135deg,#0d0015,#2a0050);">🌌</div>
+        <div class="bundle-product-img" style="display:flex;align-items:center;justify-content:center;font-size:36px;background:linear-gradient(135deg,#000d1a,#003344);">💡</div>
+        <div class="bundle-product-img" style="display:flex;align-items:center;justify-content:center;font-size:36px;background:linear-gradient(135deg,#0d000d,#2a0040);">🌈</div>
+        <div class="bundle-product-img" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a0a0f,#1a1a2e);">
+          <div style="text-align:center;">
+            <div style="font-family:var(--font-display);font-size:28px;font-weight:900;color:var(--accent-purple);">{{ section.settings.save_percent }}</div>
+            <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-heading);letter-spacing:0.1em;">SAVED</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bundle Feature",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Best Value"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title (highlighted)",
+      "default": "Starter Rig Kit"
+    },
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Badge",
+      "default": "Bundle & Save"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Everything your desk needs. One checkout."
+    },
+    {
+      "type": "text",
+      "id": "price",
+      "label": "Bundle price",
+      "default": "$109.95"
+    },
+    {
+      "type": "text",
+      "id": "was_price",
+      "label": "Was price (strikethrough)",
+      "default": "$179.85"
+    },
+    {
+      "type": "text",
+      "id": "save_amount",
+      "label": "Save amount",
+      "default": "$69.90"
+    },
+    {
+      "type": "text",
+      "id": "save_percent",
+      "label": "Save percent display",
+      "default": "35%"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Get the Bundle"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Bundle item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "item",
+          "label": "Item description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bundle Feature",
+      "blocks": [
+        { "type": "item", "settings": { "item": "XL Desk Mat — Cosmic or Japanese Series (your choice)" } },
+        { "type": "item", "settings": { "item": "Monitor Light Bar — ScreenGlow Series (330mm)" } },
+        { "type": "item", "settings": { "item": "RGB AtmoBar Twin Pack — ambient light bars" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

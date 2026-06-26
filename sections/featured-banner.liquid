@@ -1,0 +1,124 @@
+<section class="featured-banner">
+  <div class="container">
+    <div class="featured-banner-inner">
+      <div class="featured-banner-visual">
+        <div class="featured-banner-image" style="display:flex;align-items:center;justify-content:center;">
+          <div style="text-align:center;padding:40px;">
+            <div style="font-size:80px;margin-bottom:16px;">{{ section.settings.emoji }}</div>
+            <div style="font-family:var(--font-heading);font-size:20px;color:var(--accent-purple);">{{ section.settings.product_name }}</div>
+            <div style="font-size:14px;color:var(--text-muted);margin-top:8px;">{{ section.settings.product_subtitle }}</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="featured-banner-tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          {{ section.settings.badge }}
+        </span>
+        <h2 class="featured-banner-title">{{ section.settings.title }} <span class="gradient-text">{{ section.settings.title_highlight }}</span></h2>
+        <p class="featured-banner-desc">{{ section.settings.description }}</p>
+        <ul class="feature-list">
+          {% for block in section.blocks %}
+            <li {{ block.shopify_attributes }}>{{ block.settings.feature }}</li>
+          {% endfor %}
+        </ul>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
+          <a href="{{ section.settings.cta_url }}" class="btn btn-primary">{{ section.settings.cta_label }}</a>
+          <span style="font-family:var(--font-heading);font-size:22px;font-weight:700;color:var(--accent-purple);">{{ section.settings.price_from }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "emoji",
+      "label": "Product emoji",
+      "default": "🌌"
+    },
+    {
+      "type": "text",
+      "id": "product_name",
+      "label": "Product name",
+      "default": "Cosmic Series"
+    },
+    {
+      "type": "text",
+      "id": "product_subtitle",
+      "label": "Product subtitle",
+      "default": "900 × 400mm extended coverage"
+    },
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Badge text",
+      "default": "Fan Favourite"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "The Desk Mat That"
+    },
+    {
+      "type": "text",
+      "id": "title_highlight",
+      "label": "Title highlight",
+      "default": "Started It All"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Deep space photography turned into a full-desk experience. The Cosmic Series makes every other part of your setup look better just by being there."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Shop Desk Mats"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "text",
+      "id": "price_from",
+      "label": "Price display",
+      "default": "From $49.95"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature bullet",
+      "settings": [
+        {
+          "type": "text",
+          "id": "feature",
+          "label": "Feature text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Banner",
+      "blocks": [
+        { "type": "feature", "settings": { "feature": "900×400mm extended coverage — keyboard and mouse, unified" } },
+        { "type": "feature", "settings": { "feature": "4mm cushioned rubber base, non-slip and desk-protective" } },
+        { "type": "feature", "settings": { "feature": "Precision-glide surface for all mouse types" } },
+        { "type": "feature", "settings": { "feature": "Stitched edges that won't fray or lift" } },
+        { "type": "feature", "settings": { "feature": "Water-resistant — spills wipe clean" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

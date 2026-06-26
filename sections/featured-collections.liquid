@@ -1,0 +1,164 @@
+<section class="collections-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow">{{ section.settings.eyebrow }}</span>
+      <h2 class="section-title">{{ section.settings.title }} <span class="gradient-text">{{ section.settings.title_highlight }}</span></h2>
+      <p class="section-desc">{{ section.settings.description }}</p>
+    </div>
+    <div class="collections-grid stagger">
+      {% for block in section.blocks %}
+        <a href="{{ block.settings.url }}" class="collection-card {{ block.settings.theme }}" style="text-decoration:none;" {{ block.shopify_attributes }}>
+          <div class="collection-card-bg" style="background:{{ block.settings.bg_gradient }};">
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:80px;opacity:0.4;">{{ block.settings.emoji }}</div>
+          </div>
+          <div class="collection-card-overlay"></div>
+          <div class="collection-card-content">
+            <span class="collection-tag">{{ block.settings.tag }}</span>
+            <h3 class="collection-name">{{ block.settings.name }}</h3>
+            <span class="collection-count">{{ block.settings.subtitle }}</span>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Collections",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Browse by Category"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Build Your"
+    },
+    {
+      "type": "text",
+      "id": "title_highlight",
+      "label": "Title highlight",
+      "default": "Dream Setup"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Every product curated for one purpose — making your desk look and feel exactly the way you've imagined it."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_card",
+      "name": "Collection Card",
+      "settings": [
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Collection URL"
+        },
+        {
+          "type": "select",
+          "id": "theme",
+          "label": "Colour theme",
+          "options": [
+            { "value": "theme-purple", "label": "Purple" },
+            { "value": "theme-cyan", "label": "Cyan" }
+          ],
+          "default": "theme-purple"
+        },
+        {
+          "type": "text",
+          "id": "bg_gradient",
+          "label": "Background gradient (CSS)",
+          "default": "linear-gradient(135deg,#0d0015 0%,#2a0050 50%,#0a001a 100%)"
+        },
+        {
+          "type": "text",
+          "id": "emoji",
+          "label": "Emoji",
+          "default": "🌌"
+        },
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Tag",
+          "default": "Foundation"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Collection name",
+          "default": "Desk Mats"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "Cosmic & Japanese Series"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collections",
+      "blocks": [
+        {
+          "type": "collection_card",
+          "settings": {
+            "url": "/collections/desk-mats",
+            "theme": "theme-purple",
+            "bg_gradient": "linear-gradient(135deg,#0d0015 0%,#2a0050 50%,#0a001a 100%)",
+            "emoji": "🌌",
+            "tag": "Foundation",
+            "name": "Desk Mats",
+            "subtitle": "Cosmic & Japanese Series"
+          }
+        },
+        {
+          "type": "collection_card",
+          "settings": {
+            "url": "/collections/lighting",
+            "theme": "theme-cyan",
+            "bg_gradient": "linear-gradient(135deg,#000d1a 0%,#003344 50%,#001122 100%)",
+            "emoji": "💡",
+            "tag": "Atmosphere",
+            "name": "Lighting",
+            "subtitle": "Light bars, bias lighting & RGB"
+          }
+        },
+        {
+          "type": "collection_card",
+          "settings": {
+            "url": "/collections/organisation",
+            "theme": "theme-purple",
+            "bg_gradient": "linear-gradient(135deg,#0d0d00 0%,#1a1a00 50%,#0a0a00 100%)",
+            "emoji": "🎧",
+            "tag": "Organisation",
+            "name": "Stands & Hooks",
+            "subtitle": "Headphone stands, cable management"
+          }
+        },
+        {
+          "type": "collection_card",
+          "settings": {
+            "url": "/collections/bundles",
+            "theme": "theme-cyan",
+            "bg_gradient": "linear-gradient(135deg,#0d0500 0%,#2a1500 50%,#0a0500 100%)",
+            "emoji": "⚡",
+            "tag": "Best Value",
+            "name": "Bundles",
+            "subtitle": "Save up to 35% on starter kits"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

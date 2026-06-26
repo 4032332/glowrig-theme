@@ -1,0 +1,74 @@
+<section style="padding:64px 0;background:var(--bg-secondary);border-top:1px solid var(--border-subtle);">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:40px;">
+      <span class="section-eyebrow">{{ section.settings.eyebrow }}</span>
+      <h2 class="section-title" style="font-size:clamp(22px,3vw,36px);">{{ section.settings.title }} <span class="gradient-text">{{ section.settings.title_highlight }}</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+      {% for block in section.blocks %}
+        <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:24px;" {{ block.shopify_attributes }}>
+          <div style="display:flex;gap:4px;margin-bottom:12px;">
+            {% for i in (1..5) %}<span style="color:var(--accent-purple);font-size:14px;">★</span>{% endfor %}
+          </div>
+          <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">"{{ block.settings.review }}"</p>
+          <div style="font-family:var(--font-heading);font-size:13px;font-weight:600;">{{ block.settings.handle }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Reviews",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The Community"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Real Setups."
+    },
+    {
+      "type": "text",
+      "id": "title_highlight",
+      "label": "Title highlight",
+      "default": "Real Results."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "review",
+          "label": "Review text"
+        },
+        {
+          "type": "text",
+          "id": "handle",
+          "label": "Handle / name",
+          "default": "@username"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reviews",
+      "blocks": [
+        { "type": "review", "settings": { "review": "The cosmic desk mat completely transformed my setup. First thing everyone asks about on stream.", "handle": "@darkrig_au" } },
+        { "type": "review", "settings": { "review": "Ordered the starter bundle. My desk went from homework station to proper rig. Worth every cent.", "handle": "@streamsetup.mel" } },
+        { "type": "review", "settings": { "review": "The Japanese desk mat (dragon design) is unreal. Quality way better than expected. Already ordered another.", "handle": "@riglife.bris" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,80 @@
+<section class="why-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow">{{ section.settings.eyebrow }}</span>
+      <h2 class="section-title">{{ section.settings.title }} <span class="gradient-text">{{ section.settings.title_highlight }}</span></h2>
+    </div>
+    <div class="why-grid stagger">
+      {% for block in section.blocks %}
+        <div class="why-card" {{ block.shopify_attributes }}>
+          <div class="why-icon">{{ block.settings.icon }}</div>
+          <h3 class="why-title">{{ block.settings.title }}</h3>
+          <p class="why-desc">{{ block.settings.description }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Why GlowRig",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Why GlowRig"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Built for"
+    },
+    {
+      "type": "text",
+      "id": "title_highlight",
+      "label": "Title highlight",
+      "default": "Setups That Mean It"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "reason",
+      "name": "Reason",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon (emoji)",
+          "default": "🚀"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Fast AU Shipping"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "All products shipped within Australia."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Why GlowRig",
+      "blocks": [
+        { "type": "reason", "settings": { "icon": "🚀", "title": "Fast AU Shipping", "description": "All products shipped within Australia. No 6-week waits, no customs surprises." } },
+        { "type": "reason", "settings": { "icon": "✨", "title": "Aesthetic First", "description": "Every product chosen because it looks incredible on a desk. If it doesn't photograph well, it doesn't make the cut." } },
+        { "type": "reason", "settings": { "icon": "🛡️", "title": "30-Day Returns", "description": "Not vibing with it? Return it within 30 days, no questions asked." } },
+        { "type": "reason", "settings": { "icon": "💬", "title": "Real Support", "description": "Actual humans who use and care about this stuff. Fast, helpful responses every time." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

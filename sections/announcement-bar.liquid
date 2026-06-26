@@ -1,0 +1,26 @@
+<div class="announcement-bar" style="background:var(--bg-secondary);border-bottom:1px solid var(--border-subtle);padding:10px 0;text-align:center;">
+  <div class="container">
+    <p style="font-family:var(--font-heading);font-size:13px;font-weight:600;color:var(--text-secondary);letter-spacing:0.05em;margin:0;">
+      {{ section.settings.message }}
+    </p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "text",
+      "id": "message",
+      "label": "Message",
+      "default": "🚀 Free shipping on orders over $75 AUD · 30-day returns · Fast AU delivery"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Bar"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,161 @@
+<section class="hero-section scanlines">
+  <div class="hero-bg"><div class="hero-bg-gradient"></div><div class="hero-grid"></div></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-eyebrow">{{ section.settings.eyebrow }}</div>
+        <h1 class="hero-title">{{ section.settings.title }}<span class="line-glow">{{ section.settings.title_highlight }}</span></h1>
+        <p class="hero-subtitle">{{ section.settings.subtitle }}</p>
+        <div class="hero-cta-group">
+          <a href="{{ section.settings.primary_cta_url }}" class="btn btn-primary">
+            {{ section.settings.primary_cta_label }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="{{ section.settings.secondary_cta_url }}" class="btn btn-outline">{{ section.settings.secondary_cta_label }}</a>
+        </div>
+        <div class="hero-stats stagger">
+          <div>
+            <div class="hero-stat-value">{{ section.settings.stat1_value }}</div>
+            <div class="hero-stat-label">{{ section.settings.stat1_label }}</div>
+          </div>
+          <div>
+            <div class="hero-stat-value">{{ section.settings.stat2_value }}</div>
+            <div class="hero-stat-label">{{ section.settings.stat2_label }}</div>
+          </div>
+          <div>
+            <div class="hero-stat-value">{{ section.settings.stat3_value }}</div>
+            <div class="hero-stat-label">{{ section.settings.stat3_label }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-glow-orb"></div>
+        <div class="hero-product-showcase stagger">
+          <div class="showcase-card featured">
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,#0d0015,#1a0030);display:flex;align-items:center;justify-content:center;">
+              <div style="text-align:center;padding:20px;">
+                <div style="font-size:48px;margin-bottom:12px;">🌌</div>
+                <div style="font-family:var(--font-heading);font-size:14px;color:var(--accent-purple);">Cosmic Desk Mat</div>
+                <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Galactic Series</div>
+              </div>
+            </div>
+            <div class="showcase-card-label">Hero Product</div>
+          </div>
+          <div class="showcase-card">
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,#000d1a,#001a33);display:flex;align-items:center;justify-content:center;">
+              <div style="text-align:center;padding:12px;">
+                <div style="font-size:32px;margin-bottom:8px;">💡</div>
+                <div style="font-family:var(--font-heading);font-size:12px;color:var(--accent-cyan);">Monitor Light Bar</div>
+              </div>
+            </div>
+            <div class="showcase-card-label">Lighting</div>
+          </div>
+          <div class="showcase-card">
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,#0d000d,#1a0026);display:flex;align-items:center;justify-content:center;">
+              <div style="text-align:center;padding:12px;">
+                <div style="font-size:32px;margin-bottom:8px;">🎧</div>
+                <div style="font-family:var(--font-heading);font-size:12px;color:var(--accent-purple);">RGB Headphone Stand</div>
+              </div>
+            </div>
+            <div class="showcase-card-label">Stands</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Gaming Setup Accessories"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Level Up"
+    },
+    {
+      "type": "text",
+      "id": "title_highlight",
+      "label": "Title highlight (glow)",
+      "default": "Your Rig."
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Premium desk mats, RGB lighting, and setup accessories for gamers and streamers who take aesthetics seriously. Fast shipping across Australia."
+    },
+    {
+      "type": "text",
+      "id": "primary_cta_label",
+      "label": "Primary button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "primary_cta_url",
+      "label": "Primary button URL"
+    },
+    {
+      "type": "text",
+      "id": "secondary_cta_label",
+      "label": "Secondary button label",
+      "default": "View Bundles"
+    },
+    {
+      "type": "url",
+      "id": "secondary_cta_url",
+      "label": "Secondary button URL"
+    },
+    {
+      "type": "text",
+      "id": "stat1_value",
+      "label": "Stat 1 value",
+      "default": "500+"
+    },
+    {
+      "type": "text",
+      "id": "stat1_label",
+      "label": "Stat 1 label",
+      "default": "setups upgraded"
+    },
+    {
+      "type": "text",
+      "id": "stat2_value",
+      "label": "Stat 2 value",
+      "default": "4.9★"
+    },
+    {
+      "type": "text",
+      "id": "stat2_label",
+      "label": "Stat 2 label",
+      "default": "average rating"
+    },
+    {
+      "type": "text",
+      "id": "stat3_value",
+      "label": "Stat 3 value",
+      "default": "AU"
+    },
+    {
+      "type": "text",
+      "id": "stat3_label",
+      "label": "Stat 3 label",
+      "default": "fast shipping"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
+}
+{% endschema %}

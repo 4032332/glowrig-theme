@@ -1,0 +1,105 @@
+<section class="products-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow">{{ section.settings.eyebrow }}</span>
+      <h2 class="section-title">{{ section.settings.title }} <span class="gradient-text">{{ section.settings.title_highlight }}</span></h2>
+      <p class="section-desc">{{ section.settings.description }}</p>
+    </div>
+    <div class="products-grid stagger">
+      {% assign featured_collection = collections[section.settings.collection] %}
+      {% if featured_collection != blank %}
+        {% for product in featured_collection.products limit: section.settings.product_limit %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      {% else %}
+        {% for product in collections.all.products limit: section.settings.product_limit %}
+          {% render 'product-card', product: product %}
+        {% else %}
+          {% for i in (1..4) %}
+            <div class="product-card">
+              <div class="product-card-image" style="background:var(--bg-card);display:flex;align-items:center;justify-content:center;">
+                <div style="text-align:center;color:var(--text-muted);">
+                  <div style="font-size:40px;margin-bottom:8px;">🎮</div>
+                  <div style="font-size:12px;">Coming Soon</div>
+                </div>
+              </div>
+              <div class="product-card-body">
+                <div class="product-collection">GlowRig</div>
+                <div class="product-title">New Product</div>
+                <div class="product-price-row"><span class="product-price">—</span></div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endfor %}
+      {% endif %}
+    </div>
+    <div style="text-align:center;margin-top:48px;">
+      <a href="{{ section.settings.cta_url }}" class="btn btn-outline">
+        {{ section.settings.cta_label }}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Most Popular"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "The Ones"
+    },
+    {
+      "type": "text",
+      "id": "title_highlight",
+      "label": "Title highlight",
+      "default": "Everyone's Running"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "The products showing up in every setup tour, every stream overlay, every desk photo worth saving."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection to feature"
+    },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "label": "Number of products",
+      "min": 2,
+      "max": 12,
+      "step": 2,
+      "default": 8
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA button label",
+      "default": "View All Products"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "CTA button URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products"
+    }
+  ]
+}
+{% endschema %}
