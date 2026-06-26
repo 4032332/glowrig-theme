@@ -1,0 +1,257 @@
+<section class="rig-quiz-section" id="rig-quiz" style="padding:80px 0;background:var(--bg-secondary);border-top:1px solid var(--border-subtle);position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(180,79,255,0.05) 0%,transparent 70%);pointer-events:none;"></div>
+  <div class="container" style="position:relative;z-index:1;">
+
+    <div class="section-header" style="margin-bottom:48px;">
+      <span class="section-eyebrow">{{ section.settings.eyebrow }}</span>
+      <h2 class="section-title">{{ section.settings.title }} <span class="gradient-text">{{ section.settings.title_highlight }}</span></h2>
+      <p class="section-desc">{{ section.settings.description }}</p>
+    </div>
+
+    <div class="quiz-wrap" style="max-width:680px;margin:0 auto;">
+
+      <!-- Step indicators -->
+      <div class="quiz-steps" style="display:flex;justify-content:center;gap:8px;margin-bottom:40px;" aria-label="Quiz progress">
+        <div class="quiz-step active" data-step="1" style="width:32px;height:4px;border-radius:2px;background:var(--accent-purple);transition:background 0.3s;"></div>
+        <div class="quiz-step" data-step="2" style="width:32px;height:4px;border-radius:2px;background:var(--border-subtle);transition:background 0.3s;"></div>
+        <div class="quiz-step" data-step="3" style="width:32px;height:4px;border-radius:2px;background:var(--border-subtle);transition:background 0.3s;"></div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="quiz-screen active" data-screen="1">
+        <p class="quiz-question" style="font-family:var(--font-heading);font-size:clamp(18px,2.5vw,24px);font-weight:700;text-align:center;margin-bottom:32px;">What's your setup?</p>
+        <div class="quiz-options" data-key="setup" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <button class="quiz-option" data-value="pc">
+            <span class="quiz-option-icon">🖥️</span>
+            <span class="quiz-option-label">PC</span>
+          </button>
+          <button class="quiz-option" data-value="console">
+            <span class="quiz-option-icon">🎮</span>
+            <span class="quiz-option-label">Console</span>
+          </button>
+          <button class="quiz-option" data-value="streamer">
+            <span class="quiz-option-icon">📡</span>
+            <span class="quiz-option-label">Streamer</span>
+          </button>
+          <button class="quiz-option" data-value="all">
+            <span class="quiz-option-icon">⚡</span>
+            <span class="quiz-option-label">All three</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="quiz-screen" data-screen="2" style="display:none;">
+        <p class="quiz-question" style="font-family:var(--font-heading);font-size:clamp(18px,2.5vw,24px);font-weight:700;text-align:center;margin-bottom:32px;">What's your monitor size?</p>
+        <div class="quiz-options" data-key="monitor" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <button class="quiz-option" data-value="24">
+            <span class="quiz-option-icon">📺</span>
+            <span class="quiz-option-label">24"</span>
+          </button>
+          <button class="quiz-option" data-value="27">
+            <span class="quiz-option-icon">🖥️</span>
+            <span class="quiz-option-label">27"</span>
+          </button>
+          <button class="quiz-option" data-value="32">
+            <span class="quiz-option-icon">📡</span>
+            <span class="quiz-option-label">32"</span>
+          </button>
+          <button class="quiz-option" data-value="ultrawide">
+            <span class="quiz-option-icon">🌅</span>
+            <span class="quiz-option-label">34"+ Ultrawide</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="quiz-screen" data-screen="3" style="display:none;">
+        <p class="quiz-question" style="font-family:var(--font-heading);font-size:clamp(18px,2.5vw,24px);font-weight:700;text-align:center;margin-bottom:32px;">What's your vibe?</p>
+        <div class="quiz-options" data-key="vibe" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+          <button class="quiz-option" data-value="dark">
+            <span class="quiz-option-icon">🌑</span>
+            <span class="quiz-option-label">Dark & moody</span>
+          </button>
+          <button class="quiz-option" data-value="clean">
+            <span class="quiz-option-icon">✨</span>
+            <span class="quiz-option-label">Clean & minimal</span>
+          </button>
+          <button class="quiz-option" data-value="colourful">
+            <span class="quiz-option-icon">🌈</span>
+            <span class="quiz-option-label">Colourful & bold</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="quiz-screen quiz-result" data-screen="result" style="display:none;text-align:center;">
+        <div style="font-size:48px;margin-bottom:16px;" id="quiz-result-icon">🌌</div>
+        <h3 class="quiz-result-title" id="quiz-result-title" style="font-family:var(--font-heading);font-size:clamp(20px,2.8vw,28px);font-weight:700;margin-bottom:12px;"></h3>
+        <p class="quiz-result-desc" id="quiz-result-desc" style="color:var(--text-secondary);font-size:14px;line-height:1.7;margin-bottom:32px;max-width:460px;margin-left:auto;margin-right:auto;"></p>
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+          <a id="quiz-result-cta" href="/collections/all" class="btn btn-primary">Shop This Setup <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <button class="quiz-restart btn btn-outline" style="font-size:14px;">Start Over</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+.quiz-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  color: var(--text-primary);
+}
+.quiz-option:hover {
+  border-color: var(--accent-purple);
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px rgba(180,79,255,0.2);
+}
+.quiz-option.selected {
+  border-color: var(--accent-purple);
+  background: rgba(180,79,255,0.08);
+  box-shadow: 0 0 24px rgba(180,79,255,0.25);
+}
+.quiz-option-icon { font-size: 28px; }
+.quiz-option-label { font-family: var(--font-heading); font-size: 13px; font-weight: 600; }
+</style>
+
+<script>
+(function(){
+  const answers = {};
+
+  // Recommendation logic
+  const recommendations = {
+    dark: {
+      icon: '🌌',
+      title: 'The Cosmic Setup',
+      desc: 'Deep space aesthetics, purple-dominant RGB, and extended desk coverage. Made for streamers and PC players who photograph their setups.',
+      url: '/collections/desk-mats',
+      cta: 'Shop Cosmic Series',
+    },
+    clean: {
+      icon: '✨',
+      title: 'The Minimal Rig',
+      desc: 'Clean lines, subtle lighting, and a Japanese desk mat that makes every product on your desk look intentional. Less is more.',
+      url: '/collections/desk-mats',
+      cta: 'Shop Edo Series',
+    },
+    colourful: {
+      icon: '🌈',
+      title: 'The Full RGB Setup',
+      desc: 'AtmoBar ambient strips, RGBIC bias lighting, and a bold desk mat underneath. Maximum colour, maximum impact.',
+      url: '/collections/lighting',
+      cta: 'Shop Lighting',
+    },
+  };
+
+  function getRecommendation() {
+    const vibe = answers.vibe || 'dark';
+    return recommendations[vibe] || recommendations.dark;
+  }
+
+  function goTo(screen) {
+    document.querySelectorAll('.quiz-screen').forEach(s => {
+      s.style.display = 'none';
+      s.classList.remove('active');
+    });
+    const target = document.querySelector(`[data-screen="${screen}"]`);
+    if (target) { target.style.display = ''; target.classList.add('active'); }
+
+    // Update step indicators
+    document.querySelectorAll('.quiz-step').forEach(el => {
+      const step = parseInt(el.dataset.step);
+      const current = parseInt(screen);
+      el.style.background = step <= current && screen !== 'result'
+        ? 'var(--accent-purple)'
+        : step < current || screen === 'result'
+          ? 'var(--accent-cyan)'
+          : 'var(--border-subtle)';
+    });
+
+    if (screen === 'result') {
+      const rec = getRecommendation();
+      document.getElementById('quiz-result-icon').textContent = rec.icon;
+      document.getElementById('quiz-result-title').textContent = rec.title;
+      document.getElementById('quiz-result-desc').textContent = rec.desc;
+      const cta = document.getElementById('quiz-result-cta');
+      cta.href = rec.url;
+      cta.querySelector ? cta.childNodes[0].textContent = rec.cta + ' ' : null;
+    }
+  }
+
+  document.querySelectorAll('.quiz-options').forEach(group => {
+    group.querySelectorAll('.quiz-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = group.dataset.key;
+        const val = btn.dataset.value;
+        answers[key] = val;
+
+        group.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+
+        // Auto-advance after short delay
+        setTimeout(() => {
+          const currentScreen = group.closest('.quiz-screen').dataset.screen;
+          const next = currentScreen === '1' ? '2' : currentScreen === '2' ? '3' : 'result';
+          goTo(next);
+        }, 320);
+      });
+    });
+  });
+
+  document.querySelectorAll('.quiz-restart').forEach(btn => {
+    btn.addEventListener('click', () => {
+      Object.keys(answers).forEach(k => delete answers[k]);
+      document.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+      goTo('1');
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Build Your Rig Quiz",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Find Your Setup"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Build Your"
+    },
+    {
+      "type": "text",
+      "id": "title_highlight",
+      "label": "Title highlight",
+      "default": "Perfect Rig"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Answer 3 questions and we'll show you exactly what your setup needs."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Build Your Rig Quiz"
+    }
+  ]
+}
+{% endschema %}

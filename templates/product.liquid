@@ -26,6 +26,27 @@
           <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:12px;text-align:center;"><div style="font-size:20px;margin-bottom:6px;">✅</div><div style="font-family:var(--font-heading);font-size:11px;font-weight:600;color:var(--text-secondary);">Secure Checkout</div></div>
         </div>
         <div class="product-description">{{ product.description }}</div>
+
+        {% comment %} Metafield-driven feature list (custom.features JSON array) {% endcomment %}
+        {% assign features = product.metafields.custom.features.value %}
+        {% if features != blank %}
+          <div style="margin-top:28px;">
+            <div style="font-family:var(--font-heading);font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;">What's Included</div>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+              {% for feature in features %}
+                <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text-secondary);line-height:1.5;">
+                  <svg style="flex-shrink:0;margin-top:2px;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  {{ feature }}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% comment %} Metafield-driven supplier badge (internal, not displayed to customers) {% endcomment %}
+        {% if product.metafields.custom.supplier.value != blank %}
+          <div style="margin-top:20px;display:none;" aria-hidden="true" data-supplier="{{ product.metafields.custom.supplier.value }}"></div>
+        {% endif %}
       </div>
     </div>
     <div style="margin-top:96px;">
