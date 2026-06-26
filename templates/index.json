@@ -1,0 +1,197 @@
+{
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "settings": {
+        "message": "🚀 Free shipping on orders over $75 AUD · 30-day returns · Fast AU delivery"
+      }
+    },
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "Gaming Setup Accessories",
+        "title": "Level Up",
+        "title_highlight": "Your Rig.",
+        "subtitle": "Premium desk mats, RGB lighting, and setup accessories for gamers and streamers who take aesthetics seriously. Fast shipping across Australia.",
+        "primary_cta_label": "Shop Now",
+        "primary_cta_url": "/collections/all",
+        "secondary_cta_label": "View Bundles",
+        "secondary_cta_url": "/collections/bundles",
+        "stat1_value": "500+",
+        "stat1_label": "setups upgraded",
+        "stat2_value": "4.9★",
+        "stat2_label": "average rating",
+        "stat3_value": "AU",
+        "stat3_label": "fast shipping"
+      }
+    },
+    "featured-collections": {
+      "type": "featured-collections",
+      "settings": {
+        "eyebrow": "Browse by Category",
+        "title": "Build Your",
+        "title_highlight": "Dream Setup",
+        "description": "Every product curated for one purpose — making your desk look and feel exactly the way you've imagined it."
+      },
+      "blocks": {
+        "col-mats": {
+          "type": "collection_card",
+          "settings": {
+            "url": "/collections/desk-mats",
+            "theme": "theme-purple",
+            "bg_gradient": "linear-gradient(135deg,#0d0015 0%,#2a0050 50%,#0a001a 100%)",
+            "emoji": "🌌",
+            "tag": "Foundation",
+            "name": "Desk Mats",
+            "subtitle": "Cosmic & Japanese Series"
+          }
+        },
+        "col-lighting": {
+          "type": "collection_card",
+          "settings": {
+            "url": "/collections/lighting",
+            "theme": "theme-cyan",
+            "bg_gradient": "linear-gradient(135deg,#000d1a 0%,#003344 50%,#001122 100%)",
+            "emoji": "💡",
+            "tag": "Atmosphere",
+            "name": "Lighting",
+            "subtitle": "Light bars, bias lighting & RGB"
+          }
+        },
+        "col-org": {
+          "type": "collection_card",
+          "settings": {
+            "url": "/collections/organisation",
+            "theme": "theme-purple",
+            "bg_gradient": "linear-gradient(135deg,#0d0d00 0%,#1a1a00 50%,#0a0a00 100%)",
+            "emoji": "🎧",
+            "tag": "Organisation",
+            "name": "Stands & Hooks",
+            "subtitle": "Headphone stands, cable management"
+          }
+        },
+        "col-bundles": {
+          "type": "collection_card",
+          "settings": {
+            "url": "/collections/bundles",
+            "theme": "theme-cyan",
+            "bg_gradient": "linear-gradient(135deg,#0d0500 0%,#2a1500 50%,#0a0500 100%)",
+            "emoji": "⚡",
+            "tag": "Best Value",
+            "name": "Bundles",
+            "subtitle": "Save up to 35% on starter kits"
+          }
+        }
+      },
+      "blocks_order": ["col-mats", "col-lighting", "col-org", "col-bundles"]
+    },
+    "featured-products": {
+      "type": "featured-products",
+      "settings": {
+        "eyebrow": "Most Popular",
+        "title": "The Ones",
+        "title_highlight": "Everyone's Running",
+        "description": "The products showing up in every setup tour, every stream overlay, every desk photo worth saving.",
+        "collection": "all",
+        "product_limit": 8,
+        "cta_label": "View All Products",
+        "cta_url": "/collections/all"
+      }
+    },
+    "featured-banner": {
+      "type": "featured-banner",
+      "settings": {
+        "emoji": "🌌",
+        "product_name": "Cosmic Series",
+        "product_subtitle": "900 × 400mm extended coverage",
+        "badge": "Fan Favourite",
+        "title": "The Desk Mat That",
+        "title_highlight": "Started It All",
+        "description": "Deep space photography turned into a full-desk experience. The Cosmic Series makes every other part of your setup look better just by being there.",
+        "cta_label": "Shop Desk Mats",
+        "cta_url": "/collections/desk-mats",
+        "price_from": "From $49.95"
+      },
+      "blocks": {
+        "f1": { "type": "feature", "settings": { "feature": "900×400mm extended coverage — keyboard and mouse, unified" } },
+        "f2": { "type": "feature", "settings": { "feature": "4mm cushioned rubber base, non-slip and desk-protective" } },
+        "f3": { "type": "feature", "settings": { "feature": "Precision-glide surface for all mouse types" } },
+        "f4": { "type": "feature", "settings": { "feature": "Stitched edges that won't fray or lift" } },
+        "f5": { "type": "feature", "settings": { "feature": "Water-resistant — spills wipe clean" } }
+      },
+      "blocks_order": ["f1", "f2", "f3", "f4", "f5"]
+    },
+    "bundle-feature": {
+      "type": "bundle-feature",
+      "settings": {
+        "eyebrow": "Best Value",
+        "title": "Starter Rig Kit",
+        "badge": "Bundle & Save",
+        "subtitle": "Everything your desk needs. One checkout.",
+        "price": "$109.95",
+        "was_price": "$179.85",
+        "save_amount": "$69.90",
+        "save_percent": "35%",
+        "cta_label": "Get the Bundle",
+        "cta_url": "/collections/bundles"
+      },
+      "blocks": {
+        "i1": { "type": "item", "settings": { "item": "XL Desk Mat — Cosmic or Japanese Series (your choice)" } },
+        "i2": { "type": "item", "settings": { "item": "Monitor Light Bar — ScreenGlow Series (330mm)" } },
+        "i3": { "type": "item", "settings": { "item": "RGB AtmoBar Twin Pack — ambient light bars" } }
+      },
+      "blocks_order": ["i1", "i2", "i3"]
+    },
+    "why-glowrig": {
+      "type": "why-glowrig",
+      "settings": {
+        "eyebrow": "Why GlowRig",
+        "title": "Built for",
+        "title_highlight": "Setups That Mean It"
+      },
+      "blocks": {
+        "w1": { "type": "reason", "settings": { "icon": "🚀", "title": "Fast AU Shipping", "description": "All products shipped within Australia. No 6-week waits, no customs surprises." } },
+        "w2": { "type": "reason", "settings": { "icon": "✨", "title": "Aesthetic First", "description": "Every product chosen because it looks incredible on a desk. If it doesn't photograph well, it doesn't make the cut." } },
+        "w3": { "type": "reason", "settings": { "icon": "🛡️", "title": "30-Day Returns", "description": "Not vibing with it? Return it within 30 days, no questions asked." } },
+        "w4": { "type": "reason", "settings": { "icon": "💬", "title": "Real Support", "description": "Actual humans who use and care about this stuff. Fast, helpful responses every time." } }
+      },
+      "blocks_order": ["w1", "w2", "w3", "w4"]
+    },
+    "reviews": {
+      "type": "reviews",
+      "settings": {
+        "eyebrow": "The Community",
+        "title": "Real Setups.",
+        "title_highlight": "Real Results."
+      },
+      "blocks": {
+        "r1": { "type": "review", "settings": { "review": "The cosmic desk mat completely transformed my setup. First thing everyone asks about on stream.", "handle": "@darkrig_au" } },
+        "r2": { "type": "review", "settings": { "review": "Ordered the starter bundle. My desk went from homework station to proper rig. Worth every cent.", "handle": "@streamsetup.mel" } },
+        "r3": { "type": "review", "settings": { "review": "The Japanese desk mat (dragon design) is unreal. Quality way better than expected. Already ordered another.", "handle": "@riglife.bris" } }
+      },
+      "blocks_order": ["r1", "r2", "r3"]
+    },
+    "email-signup": {
+      "type": "email-signup",
+      "settings": {
+        "eyebrow": "Stay in the Loop",
+        "title": "New drops. Exclusive deals.",
+        "title_highlight": "Your setup, upgraded.",
+        "description": "Join the GlowRig community. No spam — just new product alerts and member-only discounts.",
+        "placeholder": "your@email.com",
+        "button_label": "Subscribe"
+      }
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "hero",
+    "featured-collections",
+    "featured-products",
+    "featured-banner",
+    "bundle-feature",
+    "why-glowrig",
+    "reviews",
+    "email-signup"
+  ]
+}
