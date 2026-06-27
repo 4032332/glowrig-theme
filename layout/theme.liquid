@@ -137,8 +137,11 @@
     </div>
     <div class="cart-drawer-body" id="cart-drawer-items">{% render 'cart-drawer-items' %}</div>
     <div class="cart-drawer-footer">
-      <div class="cart-subtotal"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
-      <a href="{{ routes.cart_url }}/checkout" class="btn btn-primary btn-full">Checkout</a>
+      <div class="cart-subtotal"><span>Subtotal</span><span id="cart-drawer-subtotal">{{ cart.total_price | money }}</span></div>
+      <form action="{{ routes.cart_url }}" method="post">
+        <input type="hidden" name="checkout" value="1">
+        <button type="submit" class="btn btn-primary btn-full">Checkout</button>
+      </form>
     </div>
   </div>
 

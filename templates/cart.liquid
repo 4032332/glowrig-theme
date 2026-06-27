@@ -30,7 +30,10 @@
           <div style="display:flex;justify-content:space-between;margin-bottom:24px;font-size:14px;color:var(--text-secondary);"><span>Shipping</span><span>Calculated at checkout</span></div>
           {% if cart.total_price < 7500 %}<div style="background:rgba(180,79,255,0.08);border:1px solid rgba(180,79,255,0.2);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:24px;font-size:13px;color:var(--text-secondary);">Add <strong style="color:var(--accent-purple);">{{ 7500 | minus: cart.total_price | money }}</strong> more for free shipping 🚀</div>{% else %}<div style="background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.2);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:24px;font-size:13px;color:var(--accent-cyan);">✓ You qualify for free shipping!</div>{% endif %}
           <div style="display:flex;justify-content:space-between;font-family:var(--font-heading);font-size:20px;font-weight:700;margin-bottom:24px;padding-top:16px;border-top:1px solid var(--border-subtle);"><span>Total</span><span style="color:var(--accent-purple);">{{ cart.total_price | money }}</span></div>
-          <a href="{{ routes.cart_url }}/checkout" class="btn btn-primary btn-full" style="margin-bottom:12px;">Proceed to Checkout <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <form action="{{ routes.cart_url }}" method="post" style="margin-bottom:12px;">
+            <input type="hidden" name="checkout" value="1">
+            <button type="submit" class="btn btn-primary btn-full">Proceed to Checkout <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+          </form>
           <a href="{{ routes.all_products_collection_url }}" style="display:block;text-align:center;font-size:13px;color:var(--text-muted);font-family:var(--font-heading);padding:8px;">← Continue Shopping</a>
           <div style="display:flex;gap:8px;justify-content:center;margin-top:20px;opacity:0.5;"><span style="font-size:11px;color:var(--text-muted);">Visa · Mastercard · PayPal · Apple Pay</span></div>
         </div>
