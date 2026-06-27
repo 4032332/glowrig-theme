@@ -1,3 +1,6 @@
+{% if collection.handle == 'bundles' %}
+  {% render 'collection-bundles' %}
+{% else %}
 <div class="collection-page">
   <div class="container">
     <div class="collection-hero">
@@ -62,3 +65,4 @@
     {% endpaginate %}
   </div>
 </div>
+{% endif %}
