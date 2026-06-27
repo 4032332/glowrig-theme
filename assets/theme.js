@@ -196,7 +196,17 @@ const cartDrawerUI={
       };
       btnMinus.addEventListener('click',()=>changeQty(-1));
       btnPlus.addEventListener('click',()=>changeQty(1));
-      removeBtn.addEventListener('click',()=>changeQty(-item.quantity));
+      removeBtn.addEventListener('click',async()=>{
+        if(this._busy)return;
+        this._busy=true;
+        removeBtn.textContent='Removing…';
+        try{
+          const res=await fetch('/cart/change.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:item.key,quantity:0})});
+          const updated=await res.json();
+          this.render(updated);
+        }catch{removeBtn.textContent='Remove';}
+        finally{this._busy=false;}
+      });
     });
   },
 
