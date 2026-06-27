@@ -1,5 +1,23 @@
 (function(){'use strict';
 
+// ── Cart badge (declared first so quickAdd can reference it) ──────────────
+const cartBadge={
+  el:null,
+  init(){
+    this.el=document.querySelector('.cart-badge');
+    if(!this.el)return;
+    fetch('/cart.js').then(r=>r.json()).then(cart=>{
+      this.set(cart.item_count);
+    }).catch(()=>{});
+  },
+  set(count){
+    if(!this.el)this.el=document.querySelector('.cart-badge');
+    if(!this.el)return;
+    this.el.textContent=count;
+    this.el.style.display=count>0?'flex':'none';
+  }
+};
+
 // ============================================
 // CART DRAWER
 // ============================================
@@ -33,7 +51,7 @@ const headerScroll={init(){const header=document.querySelector('.site-header');i
 // ============================================
 // QUICK ADD
 // ============================================
-const quickAdd={init(){document.querySelectorAll('[data-quick-add]').forEach(btn=>{btn.addEventListener('click',async e=>{e.preventDefault();const variantId=btn.dataset.variantId;if(!variantId)return;const orig=btn.textContent;btn.textContent='Adding...';btn.disabled=true;try{const res=await fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:variantId,quantity:1})});if(res.ok){btn.textContent='Added ✓';btn.style.borderColor='var(--accent-cyan)';btn.style.color='var(--accent-cyan)';await this.refreshDrawer();cartDrawer.open();setTimeout(()=>{btn.textContent=orig;btn.style.borderColor='';btn.style.color='';btn.disabled=false},2000)}}catch{btn.textContent=orig;btn.disabled=false}})})},async refreshDrawer(){try{const res=await fetch('/cart.js');const cart=await res.json();const badge=document.querySelector('.cart-badge');if(badge){badge.textContent=cart.item_count;badge.style.display=cart.item_count>0?'flex':'none'}const drawerBody=document.getElementById('cart-drawer-items');if(!drawerBody)return;drawerBody.replaceChildren();if(cart.item_count===0){const empty=document.createElement('div');empty.style.cssText='text-align:center;padding:48px 0';const icon=document.createElement('div');icon.style.cssText='font-size:48px;margin-bottom:16px';icon.textContent='🛒';const msg=document.createElement('p');msg.style.cssText='color:var(--text-secondary);font-size:14px';msg.textContent='Your cart is empty';const link=document.createElement('a');link.href='/collections/all';link.style.cssText='display:inline-block;margin-top:16px;font-family:var(--font-heading);font-size:13px;color:var(--accent-purple)';link.textContent='Start Shopping →';empty.append(icon,msg,link);drawerBody.appendChild(empty);return}cart.items.forEach(item=>{const row=document.createElement('div');row.style.cssText='display:grid;grid-template-columns:72px 1fr;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border-subtle)';const imgWrap=document.createElement('div');imgWrap.style.cssText='width:72px;height:72px;border-radius:var(--radius-md);overflow:hidden;background:var(--bg-secondary)';if(item.image){const img=document.createElement('img');img.src=item.image;img.alt=item.product_title;img.style.cssText='width:100%;height:100%;object-fit:cover';imgWrap.appendChild(img)}else{const ph=document.createElement('div');ph.style.cssText='width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:24px';ph.textContent='🎮';imgWrap.appendChild(ph)}const info=document.createElement('div');const title=document.createElement('div');title.style.cssText='font-family:var(--font-heading);font-size:14px;font-weight:600;margin-bottom:4px;line-height:1.3';title.textContent=item.product_title;info.appendChild(title);if(item.variant_title&&item.variant_title!=='Default Title'){const variant=document.createElement('div');variant.style.cssText='font-size:12px;color:var(--text-muted);margin-bottom:6px';variant.textContent=item.variant_title;info.appendChild(variant)}const priceRow=document.createElement('div');priceRow.style.cssText='display:flex;align-items:center;justify-content:space-between';const price=document.createElement('span');price.style.cssText='font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--accent-purple)';price.textContent='$'+(item.price/100).toFixed(2);const qty=document.createElement('span');qty.style.cssText='font-size:12px;color:var(--text-muted)';qty.textContent='Qty: '+item.quantity;priceRow.append(price,qty);info.appendChild(priceRow);row.append(imgWrap,info);drawerBody.appendChild(row)})}catch{}}};
+const quickAdd={init(){document.querySelectorAll('[data-quick-add]').forEach(btn=>{btn.addEventListener('click',async e=>{e.preventDefault();const variantId=btn.dataset.variantId;if(!variantId)return;const orig=btn.textContent;btn.textContent='Adding...';btn.disabled=true;try{const res=await fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:variantId,quantity:1})});if(res.ok){btn.textContent='Added ✓';btn.style.borderColor='var(--accent-cyan)';btn.style.color='var(--accent-cyan)';await this.refreshDrawer();cartDrawer.open();setTimeout(()=>{btn.textContent=orig;btn.style.borderColor='';btn.style.color='';btn.disabled=false},2000)}}catch{btn.textContent=orig;btn.disabled=false}})})},async refreshDrawer(){try{const res=await fetch('/cart.js');const cart=await res.json();cartBadge.set(cart.item_count)const drawerBody=document.getElementById('cart-drawer-items');if(!drawerBody)return;drawerBody.replaceChildren();if(cart.item_count===0){const empty=document.createElement('div');empty.style.cssText='text-align:center;padding:48px 0';const icon=document.createElement('div');icon.style.cssText='font-size:48px;margin-bottom:16px';icon.textContent='🛒';const msg=document.createElement('p');msg.style.cssText='color:var(--text-secondary);font-size:14px';msg.textContent='Your cart is empty';const link=document.createElement('a');link.href='/collections/all';link.style.cssText='display:inline-block;margin-top:16px;font-family:var(--font-heading);font-size:13px;color:var(--accent-purple)';link.textContent='Start Shopping →';empty.append(icon,msg,link);drawerBody.appendChild(empty);return}cart.items.forEach(item=>{const row=document.createElement('div');row.style.cssText='display:grid;grid-template-columns:72px 1fr;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border-subtle)';const imgWrap=document.createElement('div');imgWrap.style.cssText='width:72px;height:72px;border-radius:var(--radius-md);overflow:hidden;background:var(--bg-secondary)';if(item.image){const img=document.createElement('img');img.src=item.image;img.alt=item.product_title;img.style.cssText='width:100%;height:100%;object-fit:cover';imgWrap.appendChild(img)}else{const ph=document.createElement('div');ph.style.cssText='width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:24px';ph.textContent='🎮';imgWrap.appendChild(ph)}const info=document.createElement('div');const title=document.createElement('div');title.style.cssText='font-family:var(--font-heading);font-size:14px;font-weight:600;margin-bottom:4px;line-height:1.3';title.textContent=item.product_title;info.appendChild(title);if(item.variant_title&&item.variant_title!=='Default Title'){const variant=document.createElement('div');variant.style.cssText='font-size:12px;color:var(--text-muted);margin-bottom:6px';variant.textContent=item.variant_title;info.appendChild(variant)}const priceRow=document.createElement('div');priceRow.style.cssText='display:flex;align-items:center;justify-content:space-between';const price=document.createElement('span');price.style.cssText='font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--accent-purple)';price.textContent='$'+(item.price/100).toFixed(2);const qty=document.createElement('span');qty.style.cssText='font-size:12px;color:var(--text-muted)';qty.textContent='Qty: '+item.quantity;priceRow.append(price,qty);info.appendChild(priceRow);row.append(imgWrap,info);drawerBody.appendChild(row)})}catch{}}};
 
 // ============================================
 // ANNOUNCEMENT TICKER
@@ -161,6 +179,71 @@ const heroParticles={init(){const hero=document.querySelector('.hero-section');i
 // ============================================
 // INIT
 // ============================================
+/* ── Cart page: AJAX quantity controls ───────────────────────────────── */
+const cartPage={
+  busy:false,
+  init(){
+    // qty +/- buttons
+    document.querySelectorAll('.qty-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        if(this.busy)return;
+        const key=btn.dataset.key;
+        const row=btn.closest('[data-cart-row]')||btn.closest('div[style*="display:grid"]');
+        const qtyEl=btn.closest('.qty-control')?.querySelector('.qty-display');
+        const current=parseInt(qtyEl?.textContent||'1',10);
+        const next=Math.max(0,current+parseInt(btn.dataset.delta,10));
+        this.change(key,next,row,qtyEl);
+      });
+    });
+    // remove buttons
+    document.querySelectorAll('.qty-remove').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        if(this.busy)return;
+        const key=btn.dataset.key;
+        const row=btn.closest('div[style*="display:grid"]');
+        this.change(key,0,row,null);
+      });
+    });
+  },
+  async change(key,qty,row,qtyEl){
+    this.busy=true;
+    if(qtyEl)qtyEl.textContent='…';
+    try{
+      const res=await fetch('/cart/change.js',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({id:key,quantity:qty})
+      });
+      const cart=await res.json();
+      cartBadge.set(cart.item_count);
+      // update subtotal / total
+      const fmt=p=>'$'+(p/100).toFixed(2);
+      const sub=document.getElementById('cart-page-subtotal');
+      const tot=document.getElementById('cart-page-total');
+      const drawerSub=document.getElementById('cart-drawer-subtotal');
+      if(sub)sub.textContent=fmt(cart.total_price);
+      if(tot)tot.textContent=fmt(cart.total_price);
+      if(drawerSub)drawerSub.textContent=fmt(cart.total_price);
+      // find updated item
+      const item=cart.items.find(i=>i.key===key);
+      if(qty===0||!item){
+        // remove row from DOM
+        if(row)row.remove();
+        if(cart.item_count===0)location.reload();
+      } else {
+        if(qtyEl)qtyEl.textContent=item.quantity;
+        // update line price
+        const lineEl=document.querySelector(`.cart-line-price[data-key="${key}"]`);
+        if(lineEl)lineEl.textContent=fmt(item.line_price);
+      }
+    }catch(e){
+      if(qtyEl)qtyEl.textContent='!';
+    }finally{
+      this.busy=false;
+    }
+  }
+};
+
 document.addEventListener('DOMContentLoaded',()=>{
   cartDrawer.init();
   searchOverlay.init();
@@ -172,6 +255,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   ticker.init();
   cursorTrail.init();
   heroParticles.init();
+  cartBadge.init();
+  cartPage.init();
   // GSAP runs after other scripts load (defer order)
   window.addEventListener('load',()=>gsapAnimations.init());
 });

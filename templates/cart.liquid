@@ -12,24 +12,24 @@
                 {% if item.variant.title != 'Default Title' %}<div style="font-size:13px;color:var(--text-muted);margin-top:4px;">{{ item.variant.title }}</div>{% endif %}
                 <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--accent-purple);margin-top:8px;">{{ item.price | money }}</div>
                 <div style="display:flex;align-items:center;gap:12px;margin-top:12px;">
-                  <div style="display:flex;align-items:center;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);overflow:hidden;">
-                    <a href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity={{ item.quantity | minus: 1 }}" style="padding:6px 12px;font-size:16px;color:var(--text-secondary);">−</a>
-                    <span style="padding:6px 16px;font-family:var(--font-heading);font-size:14px;border-left:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle);">{{ item.quantity }}</span>
-                    <a href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity={{ item.quantity | plus: 1 }}" style="padding:6px 12px;font-size:16px;color:var(--text-secondary);">+</a>
+                  <div class="qty-control" style="display:flex;align-items:center;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);overflow:hidden;">
+                    <button class="qty-btn" data-key="{{ item.key }}" data-delta="-1" style="padding:6px 12px;font-size:16px;color:var(--text-secondary);background:none;border:none;cursor:pointer;line-height:1;">−</button>
+                    <span class="qty-display" style="padding:6px 16px;font-family:var(--font-heading);font-size:14px;border-left:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle);">{{ item.quantity }}</span>
+                    <button class="qty-btn" data-key="{{ item.key }}" data-delta="1" style="padding:6px 12px;font-size:16px;color:var(--text-secondary);background:none;border:none;cursor:pointer;line-height:1;">+</button>
                   </div>
-                  <a href="{{ routes.cart_change_url }}?id={{ item.key }}&quantity=0" style="font-size:12px;color:var(--text-muted);font-family:var(--font-heading);">Remove</a>
+                  <button class="qty-remove" data-key="{{ item.key }}" style="font-size:12px;color:var(--text-muted);font-family:var(--font-heading);background:none;border:none;cursor:pointer;padding:0;">Remove</button>
                 </div>
               </div>
-              <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text-primary);text-align:right;">{{ item.line_price | money }}</div>
+              <div class="cart-line-price" data-key="{{ item.key }}" style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text-primary);text-align:right;">{{ item.line_price | money }}</div>
             </div>
           {% endfor %}
         </div>
         <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:32px;position:sticky;top:100px;">
           <h2 style="font-family:var(--font-heading);font-size:20px;font-weight:700;margin-bottom:24px;">Order Summary</h2>
-          <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-size:14px;color:var(--text-secondary);"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-size:14px;color:var(--text-secondary);"><span>Subtotal</span><span id="cart-page-subtotal">{{ cart.total_price | money }}</span></div>
           <div style="display:flex;justify-content:space-between;margin-bottom:24px;font-size:14px;color:var(--text-secondary);"><span>Shipping</span><span>Calculated at checkout</span></div>
           {% if cart.total_price < 7500 %}<div style="background:rgba(180,79,255,0.08);border:1px solid rgba(180,79,255,0.2);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:24px;font-size:13px;color:var(--text-secondary);">Add <strong style="color:var(--accent-purple);">{{ 7500 | minus: cart.total_price | money }}</strong> more for free shipping 🚀</div>{% else %}<div style="background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.2);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:24px;font-size:13px;color:var(--accent-cyan);">✓ You qualify for free shipping!</div>{% endif %}
-          <div style="display:flex;justify-content:space-between;font-family:var(--font-heading);font-size:20px;font-weight:700;margin-bottom:24px;padding-top:16px;border-top:1px solid var(--border-subtle);"><span>Total</span><span style="color:var(--accent-purple);">{{ cart.total_price | money }}</span></div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--font-heading);font-size:20px;font-weight:700;margin-bottom:24px;padding-top:16px;border-top:1px solid var(--border-subtle);"><span>Total</span><span id="cart-page-total" style="color:var(--accent-purple);">{{ cart.total_price | money }}</span></div>
           <form action="{{ routes.cart_url }}" method="post" style="margin-bottom:12px;">
             <input type="hidden" name="checkout" value="1">
             <button type="submit" class="btn btn-primary btn-full">Proceed to Checkout <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
