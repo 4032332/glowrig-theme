@@ -601,27 +601,69 @@ const bundleBuilder = {
     this.updateSummary();
   },
 
+  _variantIdx(p) {
+    return p._variantIdx || 0;
+  },
+
+  _activeVariant(p) {
+    const idx = this._variantIdx(p);
+    return p.variants && p.variants[idx] ? p.variants[idx] : (p.variants && p.variants[0]);
+  },
+
   renderGrid(products, showCat = false) {
     const grid = document.getElementById('bb-grid');
     grid.innerHTML = '';
     products.forEach(p => {
-      const price = p.variants && p.variants[0] ? p.variants[0].price : 0;
-      const img   = p.featured_image ? p.featured_image.src : '';
-      const catLabel = showCat ? (p._cat === 'lighting' ? 'Lighting' : 'Organisation') : '';
+      const variant = this._activeVariant(p);
+      const price   = variant ? variant.price : 0;
+      // Robust image: featured_image object or array
+      const imgSrc  = (p.featured_image && (p.featured_image.src || p.featured_image)) ||
+                      (p.images && p.images[0] && (p.images[0].src || p.images[0])) || '';
+      const catLabel  = showCat ? (p._cat === 'lighting' ? 'Lighting' : 'Organisation') : '';
       const isSelected = this.sel.some(s => s && s.id === p.id);
+
+      // Build variant pills if product has multiple variants with size-like options
+      const hasVariants = p.variants && p.variants.length > 1;
+      let variantHtml = '';
+      if (hasVariants) {
+        variantHtml = '<div class="bb-card-variants" data-pid="' + p.id + '">';
+        p.variants.forEach((v, i) => {
+          const label = v.option1 || v.title;
+          const isActive = i === this._variantIdx(p);
+          variantHtml += '<button class="bb-var' + (isActive ? ' active' : '') + '" data-vidx="' + i + '">' + label + '</button>';
+        });
+        variantHtml += '</div>';
+      }
 
       const card = document.createElement('div');
       card.className = 'bb-card' + (isSelected ? ' selected' : '');
       card.innerHTML =
         '<div class="bb-card-img">' +
-          (img ? '<img src="' + img + '" alt="' + p.title + '" loading="lazy">' : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;">🎮</div>') +
+          (imgSrc ? '<img src="' + imgSrc + '" alt="' + p.title + '" loading="lazy">' : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;">🎮</div>') +
         '</div>' +
         '<div class="bb-card-body">' +
           (catLabel ? '<div class="bb-card-cat">' + catLabel + '</div>' : '') +
           '<div class="bb-card-name">' + p.title + '</div>' +
-          '<div class="bb-card-price">' + this.fmt(price) + '</div>' +
+          variantHtml +
+          '<div class="bb-card-price" data-price-pid="' + p.id + '">' + this.fmt(price) + '</div>' +
         '</div>' +
         '<div class="bb-card-check">✓</div>';
+
+      // Variant pill clicks — update selection without triggering card select
+      if (hasVariants) {
+        card.querySelectorAll('.bb-var').forEach(btn => {
+          btn.addEventListener('click', e => {
+            e.stopPropagation();
+            const idx = parseInt(btn.dataset.vidx, 10);
+            p._variantIdx = idx;
+            card.querySelectorAll('.bb-var').forEach(b => b.classList.toggle('active', b === btn));
+            const priceEl = card.querySelector('[data-price-pid]');
+            if (priceEl) priceEl.textContent = this.fmt(p.variants[idx].price);
+            // If this product is already selected, update summary price
+            if (this.sel.some(s => s && s.id === p.id)) this.updateSummary();
+          });
+        });
+      }
 
       card.addEventListener('click', () => this.selectProduct(p));
       grid.appendChild(card);
@@ -707,7 +749,8 @@ const bundleBuilder = {
     }
 
     const originalTotal = filled.reduce((sum, p) => {
-      return sum + (p.variants && p.variants[0] ? p.variants[0].price : 0);
+      const v = this._activeVariant(p);
+      return sum + (v ? v.price : 0);
     }, 0);
     const disc   = this.discount();
     const saving = Math.round(originalTotal * disc);
@@ -743,12 +786,12 @@ const bundleBuilder = {
     const discPct   = Math.round(this.discount() * 100);
     const discCode  = discPct === 20 ? 'BUNDLE20' : discPct === 10 ? 'BUNDLE10' : null;
 
-    const originalTotal = filled.reduce((sum, p) => sum + (p.variants && p.variants[0] ? p.variants[0].price : 0), 0);
+    const originalTotal = filled.reduce((sum, p) => { const v = this._activeVariant(p); return sum + (v ? v.price : 0); }, 0);
     const saving = Math.round(originalTotal * this.discount());
 
     try {
       for (const p of filled) {
-        const variantId = p.variants && p.variants[0] ? p.variants[0].id : null;
+        const variantId = this._activeVariant(p)?.id || null;
         if (!variantId) continue;
         await fetch('/cart/add.js', {
           method: 'POST',
