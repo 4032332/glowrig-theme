@@ -1,0 +1,136 @@
+{% assign mat_col   = collections['desk-mats'] %}
+{% assign light_col = collections['lighting'] %}
+{% assign org_col   = collections['organisation'] %}
+
+<section class="bundle-builder-section" id="bundle-builder">
+  <div class="container">
+
+    <div class="section-header">
+      <span class="section-eyebrow">Build Your Rig</span>
+      <h2 class="section-title">{{ section.settings.title | default: 'Custom Bundle' }} <span class="gradient-text">{{ section.settings.title_highlight | default: 'Builder' }}</span></h2>
+      <p class="section-desc">{{ section.settings.description | default: 'Pick your products, unlock your discount. The more you add, the more you save.' }}</p>
+    </div>
+
+    <!-- Discount tiers banner -->
+    <div class="bb-tiers">
+      <div class="bb-tier bb-tier--active" id="bb-tier-1">
+        <div class="bb-tier-pct">Full Price</div>
+        <div class="bb-tier-label">1 item</div>
+      </div>
+      <div class="bb-tier-arrow">→</div>
+      <div class="bb-tier" id="bb-tier-2">
+        <div class="bb-tier-pct">10% off</div>
+        <div class="bb-tier-label">2 items</div>
+      </div>
+      <div class="bb-tier-arrow">→</div>
+      <div class="bb-tier" id="bb-tier-3">
+        <div class="bb-tier-pct">20% off</div>
+        <div class="bb-tier-label">3 items</div>
+      </div>
+    </div>
+
+    <!-- Step indicators -->
+    <div class="bb-steps">
+      <div class="bb-step-item active" id="bb-step-ind-1">
+        <div class="bb-step-circle">1</div>
+        <div class="bb-step-text">Choose a Mat</div>
+      </div>
+      <div class="bb-step-line"></div>
+      <div class="bb-step-item" id="bb-step-ind-2">
+        <div class="bb-step-circle">2</div>
+        <div class="bb-step-text">Add Lighting or Accessory</div>
+      </div>
+      <div class="bb-step-line"></div>
+      <div class="bb-step-item" id="bb-step-ind-3">
+        <div class="bb-step-circle">3</div>
+        <div class="bb-step-text">Add the Rest</div>
+      </div>
+    </div>
+
+    <!-- Main layout -->
+    <div class="bb-layout">
+
+      <!-- Product grid -->
+      <div class="bb-products-wrap">
+        <div class="bb-step-heading" id="bb-step-heading">Step 1 — Choose your desk mat</div>
+        <div class="bb-category-label" id="bb-category-label"></div>
+        <div class="bb-grid" id="bb-grid">
+          <!-- Populated by JS -->
+        </div>
+        <!-- Back button -->
+        <button class="bb-back" id="bb-back" style="display:none">← Back</button>
+      </div>
+
+      <!-- Summary sidebar -->
+      <div class="bb-summary" id="bb-summary">
+        <div class="bb-summary-heading">Your Bundle</div>
+
+        <div class="bb-summary-slots" id="bb-summary-slots">
+          <div class="bb-slot" id="bb-slot-1">
+            <div class="bb-slot-num">1</div>
+            <div class="bb-slot-content">
+              <div class="bb-slot-label">Desk Mat</div>
+              <div class="bb-slot-name" id="bb-slot-1-name">Not selected</div>
+            </div>
+          </div>
+          <div class="bb-slot bb-slot--locked" id="bb-slot-2">
+            <div class="bb-slot-num">2</div>
+            <div class="bb-slot-content">
+              <div class="bb-slot-label">Lighting / Accessory</div>
+              <div class="bb-slot-name" id="bb-slot-2-name">Not selected</div>
+            </div>
+          </div>
+          <div class="bb-slot bb-slot--locked" id="bb-slot-3">
+            <div class="bb-slot-num">3</div>
+            <div class="bb-slot-content">
+              <div class="bb-slot-label">Second Add-on</div>
+              <div class="bb-slot-name" id="bb-slot-3-name">Not selected</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bb-pricing" id="bb-pricing" style="display:none">
+          <div class="bb-pricing-row">
+            <span>Original price</span>
+            <span class="bb-original-price" id="bb-original-price"></span>
+          </div>
+          <div class="bb-pricing-row bb-pricing-discount" id="bb-discount-row" style="display:none">
+            <span id="bb-discount-label">Bundle discount</span>
+            <span class="bb-saving" id="bb-saving"></span>
+          </div>
+          <div class="bb-pricing-total">
+            <span>Your price</span>
+            <span class="bb-total-price" id="bb-total-price"></span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full bb-cta" id="bb-add-cart" disabled>
+          Add Bundle to Cart
+        </button>
+        <div class="bb-cta-hint" id="bb-cta-hint">Select a desk mat to start</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Bake product data into page as JSON -->
+<script>
+window.GR_BUNDLE = {
+  mats: {{ mat_col.products | limit: 16 | json }},
+  lighting: {{ light_col.products | limit: 16 | json }},
+  organisation: {{ org_col.products | limit: 16 | json }}
+};
+</script>
+
+{% schema %}
+{
+  "name": "Bundle Builder",
+  "settings": [
+    { "type": "text",     "id": "title",           "label": "Title",           "default": "Custom Bundle" },
+    { "type": "text",     "id": "title_highlight",  "label": "Title highlight", "default": "Builder" },
+    { "type": "textarea", "id": "description",      "label": "Description",     "default": "Pick your products, unlock your discount. The more you add, the more you save." }
+  ],
+  "presets": [{ "name": "Bundle Builder" }]
+}
+{% endschema %}

@@ -150,6 +150,14 @@
       },
       "blocks_order": ["i1", "i2", "i3"]
     },
+    "bundle-builder": {
+      "type": "bundle-builder",
+      "settings": {
+        "title": "Custom Bundle",
+        "title_highlight": "Builder",
+        "description": "Pick your products, unlock your discount. The more you add, the more you save."
+      }
+    },
     "why-glowrig": {
       "type": "why-glowrig",
       "settings": {
@@ -198,6 +206,7 @@
     "featured-products",
     "featured-banner",
     "bundle-feature",
+    "bundle-builder",
     "why-glowrig",
     "reviews",
     "email-signup"

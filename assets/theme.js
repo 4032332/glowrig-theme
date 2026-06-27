@@ -115,7 +115,91 @@ const cartDrawerUI={
       return;
     }
 
+    // Separate bundle items (have _bundle_id property) from regular items
+    const bundleGroups={};
+    const regularItems=[];
     cart.items.forEach(item=>{
+      const props=item.properties||{};
+      const bid=props._bundle_id;
+      if(bid){
+        if(!bundleGroups[bid])bundleGroups[bid]=[];
+        bundleGroups[bid].push(item);
+      } else {
+        regularItems.push(item);
+      }
+    });
+
+    // Render bundle groups first
+    Object.values(bundleGroups).forEach(items=>{
+      const first=items[0];
+      const props=first.properties||{};
+      const size=parseInt(props._bundle_size||'1',10);
+      const disc=parseInt(props._bundle_disc||'0',10);
+      const origCents=parseInt(props._bundle_orig||'0',10);
+      const saveCents=parseInt(props._bundle_save||'0',10);
+      const nowCents=origCents-saveCents;
+      const fmt=c=>'$'+(c/100).toFixed(2);
+
+      const group=document.createElement('div');
+      group.className='drawer-bundle-group';
+      group.innerHTML=
+        '<div class="drawer-bundle-header">'+
+          '<span class="drawer-bundle-title">Bundle</span>'+
+          '<span class="drawer-bundle-badge">'+size+' ITEMS'+(disc>0?' · '+disc+'% OFF':'')+'</span>'+
+        '</div>';
+
+      items.forEach(it=>{
+        const itRow=document.createElement('div');
+        itRow.className='drawer-bundle-item';
+        itRow.innerHTML=
+          '<div class="drawer-bundle-item-img">'+
+            (it.image?'<img src="'+it.image+'" alt="'+it.product_title+'">':'<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:20px;">🎮</div>')+
+          '</div>'+
+          '<div class="drawer-bundle-item-name">'+it.product_title+'</div>'+
+          '<div class="drawer-bundle-item-price">'+fmt(it.price)+'</div>';
+        group.appendChild(itRow);
+      });
+
+      const foot=document.createElement('div');
+      foot.className='drawer-bundle-footer';
+      foot.innerHTML=
+        (disc>0?'<span class="drawer-bundle-was">'+fmt(origCents)+'</span>':'<span></span>')+
+        '<span class="drawer-bundle-now">'+fmt(disc>0?nowCents:origCents)+'</span>';
+      group.appendChild(foot);
+
+      // Remove all bundle items
+      const removeBtn=document.createElement('button');
+      removeBtn.className='drawer-bundle-remove';
+      removeBtn.textContent='Remove bundle';
+      removeBtn.addEventListener('click',async()=>{
+        removeBtn.textContent='Removing…';
+        try{
+          for(const it of items){
+            await fetch('/cart/change.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:it.key,quantity:0})});
+          }
+          await cartDrawerUI.refresh();
+        }catch{removeBtn.textContent='Remove bundle';}
+      });
+      group.appendChild(removeBtn);
+      body.appendChild(group);
+    });
+
+    // Update checkout button with bundle discount code if applicable
+    const checkoutForm=document.querySelector('.cart-drawer-footer form');
+    if(checkoutForm){
+      const bundleCode=cart.attributes&&cart.attributes._bundle_code;
+      const existingInput=checkoutForm.querySelector('[name="discount"]');
+      if(bundleCode){
+        if(!existingInput){
+          const inp=document.createElement('input');
+          inp.type='hidden';inp.name='discount';inp.value=bundleCode;
+          checkoutForm.appendChild(inp);
+        } else {existingInput.value=bundleCode;}
+      } else if(existingInput){existingInput.remove();}
+    }
+
+    // Render regular items
+    regularItems.forEach(item=>{
       const row=document.createElement('div');
       row.className='drawer-item';
       row.dataset.key=item.key;
@@ -442,6 +526,271 @@ const cartPage={
   }
 };
 
+/* ── Bundle Builder ──────────────────────────────────────────────────────── */
+const bundleBuilder = {
+  step: 1,
+  sel: [null, null, null], // [mat, second, third]
+  usedCats: [],            // which non-mat cats have been selected
+  ALL_CATS: ['lighting', 'organisation'],
+
+  init() {
+    if (!window.GR_BUNDLE) return;
+    if (!document.getElementById('bb-grid')) return;
+    this._tagProducts();
+    this.renderStep(1);
+    document.getElementById('bb-add-cart').addEventListener('click', () => this.addToCart());
+    document.getElementById('bb-back').addEventListener('click', () => this.goBack());
+  },
+
+  /* Tag each product with its category for step 2/3 logic */
+  _tagProducts() {
+    const d = window.GR_BUNDLE;
+    d.mats = d.mats.map(p => ({...p, _cat:'mats'}));
+    d.lighting = d.lighting.map(p => ({...p, _cat:'lighting'}));
+    d.organisation = d.organisation.map(p => ({...p, _cat:'organisation'}));
+  },
+
+  fmt(cents) { return '$' + (cents / 100).toFixed(2); },
+
+  discount() {
+    const filled = this.sel.filter(Boolean).length;
+    if (filled >= 3) return 0.20;
+    if (filled >= 2) return 0.10;
+    return 0;
+  },
+
+  renderStep(n) {
+    this.step = n;
+    const d = window.GR_BUNDLE;
+    const heading = document.getElementById('bb-step-heading');
+    const catLabel = document.getElementById('bb-category-label');
+    const backBtn  = document.getElementById('bb-back');
+
+    // Step indicators
+    [1,2,3].forEach(i => {
+      const el = document.getElementById('bb-step-ind-' + i);
+      el.classList.remove('active', 'done');
+      if (i < n) el.classList.add('done');
+      else if (i === n) el.classList.add('active');
+    });
+
+    if (n === 1) {
+      heading.textContent = 'Step 1 — Choose your desk mat';
+      catLabel.textContent = d.mats.length + ' mats available';
+      backBtn.style.display = 'none';
+      this.renderGrid(d.mats);
+    } else if (n === 2) {
+      // Show products from both non-mat categories
+      const avail = [...d.lighting, ...d.organisation];
+      heading.textContent = 'Step 2 — Add lighting or an accessory';
+      catLabel.textContent = 'Choose one item from Lighting or Organisation';
+      backBtn.style.display = 'inline-block';
+      this.renderGrid(avail, true);
+    } else if (n === 3) {
+      // Only show the category not yet selected
+      const usedCat = this.sel[1]?._cat;
+      const remainCat = this.ALL_CATS.find(c => c !== usedCat);
+      const avail = d[remainCat] || [];
+      const label = remainCat === 'lighting' ? 'Lighting' : 'Organisation';
+      heading.textContent = 'Step 3 — Add a ' + label + ' item';
+      catLabel.textContent = avail.length + ' items available — and save 20%';
+      backBtn.style.display = 'inline-block';
+      this.renderGrid(avail);
+    }
+
+    this.updateSummary();
+  },
+
+  renderGrid(products, showCat = false) {
+    const grid = document.getElementById('bb-grid');
+    grid.innerHTML = '';
+    products.forEach(p => {
+      const price = p.variants && p.variants[0] ? p.variants[0].price : 0;
+      const img   = p.featured_image ? p.featured_image.src : '';
+      const catLabel = showCat ? (p._cat === 'lighting' ? 'Lighting' : 'Organisation') : '';
+      const isSelected = this.sel.some(s => s && s.id === p.id);
+
+      const card = document.createElement('div');
+      card.className = 'bb-card' + (isSelected ? ' selected' : '');
+      card.innerHTML =
+        '<div class="bb-card-img">' +
+          (img ? '<img src="' + img + '" alt="' + p.title + '" loading="lazy">' : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;">🎮</div>') +
+        '</div>' +
+        '<div class="bb-card-body">' +
+          (catLabel ? '<div class="bb-card-cat">' + catLabel + '</div>' : '') +
+          '<div class="bb-card-name">' + p.title + '</div>' +
+          '<div class="bb-card-price">' + this.fmt(price) + '</div>' +
+        '</div>' +
+        '<div class="bb-card-check">✓</div>';
+
+      card.addEventListener('click', () => this.selectProduct(p));
+      grid.appendChild(card);
+    });
+  },
+
+  selectProduct(p) {
+    const idx = this.step - 1;
+    this.sel[idx] = p;
+
+    if (this.step === 1) {
+      this.renderStep(2);
+    } else if (this.step === 2) {
+      this.renderStep(3);
+    } else {
+      // Step 3 done — just update summary, enable CTA
+      this.updateSummary();
+      this.renderGrid(
+        window.GR_BUNDLE[this.ALL_CATS.find(c => c !== this.sel[1]?._cat)] || [],
+        false
+      );
+      // Re-render to show check mark
+      const usedCat = this.sel[1]?._cat;
+      const remainCat = this.ALL_CATS.find(c => c !== usedCat);
+      this.renderGrid(window.GR_BUNDLE[remainCat] || []);
+    }
+  },
+
+  goBack() {
+    if (this.step === 2) {
+      this.sel[1] = null;
+      this.renderStep(1);
+    } else if (this.step === 3) {
+      this.sel[2] = null;
+      this.renderStep(2);
+    }
+  },
+
+  updateSummary() {
+    const slots = [
+      { el: document.getElementById('bb-slot-1'), nameEl: document.getElementById('bb-slot-1-name'), sel: this.sel[0] },
+      { el: document.getElementById('bb-slot-2'), nameEl: document.getElementById('bb-slot-2-name'), sel: this.sel[1] },
+      { el: document.getElementById('bb-slot-3'), nameEl: document.getElementById('bb-slot-3-name'), sel: this.sel[2] },
+    ];
+    slots.forEach((s, i) => {
+      if (s.sel) {
+        s.el.classList.add('bb-slot--filled');
+        s.el.classList.remove('bb-slot--locked');
+        s.nameEl.textContent = s.sel.title;
+      } else {
+        s.el.classList.remove('bb-slot--filled');
+        if (i > 0) s.el.classList.add('bb-slot--locked');
+        s.nameEl.textContent = 'Not selected';
+      }
+    });
+
+    const filled = this.sel.filter(Boolean);
+    const pricingEl = document.getElementById('bb-pricing');
+    const addBtn    = document.getElementById('bb-add-cart');
+    const hintEl    = document.getElementById('bb-cta-hint');
+    const discRow   = document.getElementById('bb-discount-row');
+    const discLabel = document.getElementById('bb-discount-label');
+    const savingEl  = document.getElementById('bb-saving');
+    const origEl    = document.getElementById('bb-original-price');
+    const totalEl   = document.getElementById('bb-total-price');
+
+    // Tier highlighting
+    [1,2,3].forEach(n => {
+      const t = document.getElementById('bb-tier-' + n);
+      if (t) t.classList.toggle('bb-tier--active', filled.length === n - 1 || (n === 3 && filled.length >= 3));
+    });
+    if (document.getElementById('bb-tier-1')) {
+      document.getElementById('bb-tier-1').classList.toggle('bb-tier--active', filled.length === 0);
+      document.getElementById('bb-tier-2').classList.toggle('bb-tier--active', filled.length === 1);
+      document.getElementById('bb-tier-3').classList.toggle('bb-tier--active', filled.length >= 2);
+    }
+
+    if (filled.length === 0) {
+      pricingEl.style.display = 'none';
+      addBtn.disabled = true;
+      hintEl.textContent = 'Select a desk mat to start';
+      return;
+    }
+
+    const originalTotal = filled.reduce((sum, p) => {
+      return sum + (p.variants && p.variants[0] ? p.variants[0].price : 0);
+    }, 0);
+    const disc   = this.discount();
+    const saving = Math.round(originalTotal * disc);
+    const total  = originalTotal - saving;
+
+    pricingEl.style.display = 'flex';
+    origEl.textContent = this.fmt(originalTotal);
+    totalEl.textContent = this.fmt(total);
+
+    if (disc > 0) {
+      discRow.style.display = 'flex';
+      discLabel.textContent = 'Bundle discount (' + Math.round(disc * 100) + '% off)';
+      savingEl.textContent  = '−' + this.fmt(saving);
+    } else {
+      discRow.style.display = 'none';
+    }
+
+    addBtn.disabled = false;
+    const count = filled.length;
+    hintEl.textContent = count === 1 ? 'Add a 2nd item for 10% off' : count === 2 ? 'Add a 3rd item for 20% off' : '20% bundle discount applied!';
+    addBtn.textContent = 'Add Bundle to Cart (' + count + ' item' + (count > 1 ? 's' : '') + ')';
+  },
+
+  async addToCart() {
+    const filled = this.sel.filter(Boolean);
+    if (!filled.length) return;
+    const btn = document.getElementById('bb-add-cart');
+    btn.textContent = 'Adding...';
+    btn.disabled = true;
+
+    const bundleId  = 'bundle-' + Date.now();
+    const bundleSize = filled.length;
+    const discPct   = Math.round(this.discount() * 100);
+    const discCode  = discPct === 20 ? 'BUNDLE20' : discPct === 10 ? 'BUNDLE10' : null;
+
+    const originalTotal = filled.reduce((sum, p) => sum + (p.variants && p.variants[0] ? p.variants[0].price : 0), 0);
+    const saving = Math.round(originalTotal * this.discount());
+
+    try {
+      for (const p of filled) {
+        const variantId = p.variants && p.variants[0] ? p.variants[0].id : null;
+        if (!variantId) continue;
+        await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: variantId,
+            quantity: 1,
+            properties: {
+              _bundle_id:   bundleId,
+              _bundle_size: String(bundleSize),
+              _bundle_disc: String(discPct),
+              _bundle_save: String(saving),
+              _bundle_orig: String(originalTotal),
+            }
+          })
+        });
+      }
+
+      // Store discount code as cart attribute so we can use it at checkout
+      if (discCode) {
+        await fetch('/cart/update.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ attributes: { _bundle_code: discCode } })
+        });
+      }
+
+      await cartDrawerUI.refresh();
+      cartDrawer.open();
+
+      // Reset builder
+      this.sel = [null, null, null];
+      this.renderStep(1);
+      btn.textContent = 'Add Bundle to Cart';
+      btn.disabled = true;
+    } catch(e) {
+      btn.textContent = 'Error — try again';
+      btn.disabled = false;
+    }
+  }
+};
+
 document.addEventListener('DOMContentLoaded',()=>{
   cartDrawer.init();
   searchOverlay.init();
@@ -455,6 +804,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   heroParticles.init();
   cartBadge.init();
   cartPage.init();
+  bundleBuilder.init();
 
   // Intercept product page "Add to Cart" form — open drawer instead of navigating
   const productForm=document.querySelector('[data-product-form]');
