@@ -639,7 +639,7 @@ const bundleBuilder = {
       card.className = 'bb-card' + (isSelected ? ' selected' : '');
       card.innerHTML =
         '<div class="bb-card-img">' +
-          (imgSrc ? '<img src="' + imgSrc + '" alt="' + p.title + '" loading="lazy">' : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;">🎮</div>') +
+          (imgSrc ? '<img src="' + imgSrc + '" alt="' + p.title + '" loading="lazy" data-img-pid="' + p.id + '">' : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;">🎮</div>') +
         '</div>' +
         '<div class="bb-card-body">' +
           (catLabel ? '<div class="bb-card-cat">' + catLabel + '</div>' : '') +
@@ -659,6 +659,12 @@ const bundleBuilder = {
             card.querySelectorAll('.bb-var').forEach(b => b.classList.toggle('active', b === btn));
             const priceEl = card.querySelector('[data-price-pid]');
             if (priceEl) priceEl.textContent = this.fmt(p.variants[idx].price);
+            // Swap image if this variant has its own image
+            const variantImg = p.variants[idx].featured_image;
+            if (variantImg) {
+              const imgEl = card.querySelector('[data-img-pid]');
+              if (imgEl) imgEl.src = variantImg.src || variantImg;
+            }
             // If this product is already selected, update summary price
             if (this.sel.some(s => s && s.id === p.id)) this.updateSummary();
           });
