@@ -9,7 +9,7 @@
     </a>
     {% if product.tags contains 'hot' %}<span class="product-badge badge-hot">🔥 Hot</span>{% endif %}
     <div class="product-quick-add">
-      <button class="btn btn-outline btn-full" data-quick-add data-variant-id="{{ product.selected_or_first_available_variant.id }}" style="font-size:12px;padding:10px 16px;background:rgba(10,10,15,0.9);backdrop-filter:blur(8px);">Quick Add</button>
+      <button class="btn btn-outline btn-full" data-quick-add data-variant-id="{{ product.selected_or_first_available_variant.id }}" data-product-title="{{ product.title | escape }}" style="font-size:12px;padding:10px 16px;background:rgba(10,10,15,0.9);backdrop-filter:blur(8px);">Quick Add</button>
     </div>
   </div>
   <div class="product-card-body">

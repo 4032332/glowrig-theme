@@ -60,6 +60,15 @@ a:hover{color:var(--accent-purple)}
 .header-icon-btn:hover{color:var(--accent-purple)}
 .cart-count{position:relative}
 .cart-badge{position:absolute;top:-4px;right:-4px;background:var(--accent-purple);color:white;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px rgba(180,79,255,0.6)}
+.cart-icon-wrap{position:relative}
+.cart-popup{position:absolute;top:calc(100% + 14px);right:0;width:280px;background:var(--bg-card);border:1px solid var(--border-glow);border-radius:var(--radius-lg);padding:20px;box-shadow:0 8px 40px rgba(0,0,0,0.6),0 0 20px rgba(180,79,255,0.15);z-index:300;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity 0.22s ease,transform 0.22s ease}
+.cart-popup::before{content:'';position:absolute;top:-7px;right:16px;width:12px;height:12px;background:var(--bg-card);border-top:1px solid var(--border-glow);border-left:1px solid var(--border-glow);transform:rotate(45deg)}
+.cart-popup.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.cart-popup-tick{font-family:var(--font-heading);font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent-cyan);margin-bottom:10px}
+.cart-popup-product{font-size:14px;color:var(--text-primary);font-family:var(--font-heading);font-weight:600;line-height:1.4;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border-subtle)}
+.cart-popup-actions{display:flex;flex-direction:column;gap:8px}
+.cart-popup-continue{background:none;border:none;cursor:pointer;font-family:var(--font-heading);font-size:13px;color:var(--text-muted);padding:6px 0;text-align:center;transition:color var(--transition)}
+.cart-popup-continue:hover{color:var(--text-secondary)}
 .mobile-menu-btn{display:none;background:none;border:none;cursor:pointer;color:var(--text-primary);flex-direction:column;gap:5px;padding:8px}
 .mobile-menu-btn span{display:block;width:22px;height:2px;background:currentColor;transition:all var(--transition)}
 
