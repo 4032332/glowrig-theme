@@ -455,6 +455,37 @@ document.addEventListener('DOMContentLoaded',()=>{
   heroParticles.init();
   cartBadge.init();
   cartPage.init();
+
+  // Intercept product page "Add to Cart" form — open drawer instead of navigating
+  const productForm=document.querySelector('[data-product-form]');
+  if(productForm){
+    productForm.addEventListener('submit',async e=>{
+      e.preventDefault();
+      const btn=productForm.querySelector('[data-add-to-cart]');
+      const variantSelect=productForm.querySelector('[name="id"]');
+      if(!variantSelect)return;
+      const orig=btn?btn.textContent:'';
+      if(btn){btn.textContent='Adding...';btn.disabled=true;}
+      try{
+        const res=await fetch('/cart/add.js',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({id:variantSelect.value,quantity:1})
+        });
+        if(res.ok){
+          await cartDrawerUI.refresh();
+          cartDrawer.open();
+          if(btn){
+            btn.textContent='Added ✓';
+            btn.style.background='linear-gradient(135deg,rgba(0,245,255,0.3),rgba(0,245,255,0.1))';
+            setTimeout(()=>{btn.textContent=orig;btn.style.background='';btn.disabled=false;},2200);
+          }
+        }
+      }catch{
+        if(btn){btn.textContent=orig;btn.disabled=false;}
+      }
+    });
+  }
   // GSAP runs after other scripts load (defer order)
   window.addEventListener('load',()=>gsapAnimations.init());
 });
